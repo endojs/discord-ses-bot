@@ -10,7 +10,7 @@ A member can have SES-bot print their ID by calling "/eval id".
 
 ## Running your own
 
-Set up `config.json` to look like this:
+[Create a Discord App](https://discord.com/developers/applications) and then use its settings to set up `config.json` to look like this:
 
 ```
 {
