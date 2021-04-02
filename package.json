@@ -1,0 +1,16 @@
+{
+  "name": "discord-ses-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "<dan@danfinlay.com>",
+  "license": "ISC",
+  "repository": "https://github.com/danfinlay/discord-ses-bot.git",
+  "dependencies": {
+    "discord.js": "^12.5.2",
+    "ses": "^0.12.6"
+  }
+}
