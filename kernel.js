@@ -29,7 +29,11 @@ function handleCommand (request) {
 }
 
 function serializeOutput (value) {
-  return ArrayBuffer.fromString(JSON.stringify(value, null, 2))
+  try {
+    return ArrayBuffer.fromString(JSON.stringify(value, null, 2))
+  } catch (err) {
+    return ArrayBuffer.fromString('{ "error": "<failed to serialize result>" }')
+  }
 }
 
 function getAuthorsState () {
@@ -99,7 +103,7 @@ function createMapProxyHandlers () {
     },
     getOwnPropertyDescriptor: (target, key) => {
       if (target.has(key)) {
-        return { value: target.get(key), enumberable: true, writable: false, configurable: false }
+        return { value: target.get(key), enumberable: true, writable: false, configurable: true }
       } else {
         return undefined
       }
@@ -130,6 +134,10 @@ function createReadOnlyMapProxy (map, resultTransform) {
 }
 
 function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Reflect) {
+  // if target is an object, return as is
+  if (target === undefined || Object(target) !== target) {
+    return target
+  }
   return new Proxy({}, {
     // read hooks
     get: (_, ...args) => {

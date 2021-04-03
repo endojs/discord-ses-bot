@@ -6,12 +6,13 @@ import { createRunner } from './runner'
 const REPLY_LIMIT = 2000
 const defaultLogPath = path.join(__dirname, 'log.txt')
 
-// main()
+main()
 
-// async function main () {
-//   const machine = createMachine()
-//   await machine.replayPastFromLog()
-// }
+async function main () {
+  const machine = createMachine()
+  await machine.replayPastFromLog()
+  await machine.runner.close()
+}
 
 export function createMachine ({
   logPath = defaultLogPath
@@ -69,6 +70,7 @@ export function createMachine ({
   async function replayPast (loggableCommands) {
     const results = []
     for (const command of loggableCommands) {
+      // console.log(command)
       const result = await executeLoggable(command)
       results.push(result)
     }

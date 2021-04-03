@@ -10,7 +10,8 @@ export function createRunner () {
   return {
     initiailize,
     runCommand,
-    getSystemState
+    getSystemState,
+    close
   }
 
   async function initiailize () {
@@ -35,5 +36,9 @@ export function createRunner () {
   async function getSystemState () {
     const response = await worker.issueStringCommand(JSON.stringify({ authorId: 'system', command: 'systemState' }))
     return JSON.parse(response.reply)
+  }
+
+  async function close () {
+    await worker.close()
   }
 }
