@@ -13,6 +13,9 @@ main()
 async function main () {
   console.log(`Starting SES-bot! Add to your discord server with this link: \n${link}`)
 
+  /**
+   * DISCORD CONFIG SECTION
+   */
   const client = new Client({
     client_id: appKey,
     scope: 'bot',
@@ -24,10 +27,6 @@ async function main () {
 
   const commandBuffer = []
   let isRunning = true
-
-  client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`)
-  })
 
   client.on('message', async msg => {
     const authorId = msg.author.id
