@@ -33,6 +33,7 @@ export function createRunner () {
     try {
       response = await worker.issueStringCommand(JSON.stringify({ authorId, command }))
     } catch (err) {
+      err.terminal = true;
       return { error: err }
     }
     return JSON.parse(response.reply)

@@ -7,10 +7,12 @@ const REPLY_LIMIT = 2000
 const defaultLogPath = path.join(__dirname, 'log.txt')
 
 export function createMachine ({
-  logPath = defaultLogPath
+  logPath = defaultLogPath,
+  logging = true,
 } = {}) {
-  const runner = createRunner()
-  const commandBuffer = [];
+
+  let runner = createRunner()
+  let commandBuffer = [];
   let isRunning = false;
 
   return {
@@ -26,16 +28,6 @@ export function createMachine ({
 
   async function appendLoggable (loggable, msg) {
     await fs.appendFile(logPath, loggable + '\n')
-    console.log(loggable)
-    const { result, error } = await executeLoggable(loggable)
-    let stringReply = serializeReply({ error, result })
-    if (stringReply.length > REPLY_LIMIT) {
-      const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
-      stringReply = stringReply.slice(0, REPLY_LIMIT - replyTruncactionMessage.length) + replyTruncactionMessage
-    }
-    console.log(`> ${stringReply}`)
-    if (!msg || !msg.reply) return
-    msg.reply(stringReply)
   }
 
   async function executeLoggable (loggable, msg) {
@@ -44,6 +36,13 @@ export function createMachine ({
     const command = components.join(':')
     const { result, error } = await runner.runCommand(authorId, command)
     return { result, error }
+  }
+
+  async function restart () {
+    runner.close()
+    runner = createRunner()
+    replayPastFromDisk()
+    commandBuffer = []
   }
 
   async function getLogFromDisk () {
@@ -87,10 +86,63 @@ export function createMachine ({
     // handle next command
     isRunning = true
     const { loggable, msg } = commandBuffer.shift()
-    await appendLoggable(loggable, msg)
+
+    // Commit to running message 
+    if (logging) {
+      await appendLoggable(loggable, msg)
+    }
+
+    let stringReply
+    const { result, error } = await executeLoggable(loggable)
+    stringReply = serializeReply({ error, result })
+
+    if (error && error.terminal) {
+      console.log('we have caught an executeLoggable error')
+      console.error(error);
+
+      // If we can't execute that command, we need to purge it from the logs
+      // So that replays don't also throw crashing errors.
+      console.log('removing command from logs')
+      await strikeLastLog(loggable)
+      console.log('removed from logs they say, restarting')
+
+      await restart()
+      console.log('restarted')
+      stringReply = `Terminal Error, state reverted.`
+    }
+
+    if (stringReply.length > REPLY_LIMIT) {
+      const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
+      stringReply = stringReply.slice(0, REPLY_LIMIT - replyTruncactionMessage.length) + replyTruncactionMessage
+    }
+
+    console.log(`> ${stringReply}`)
+    if (!msg || !msg.reply) return
+    msg.reply(stringReply)
+
     isRunning = false
     // continue flushing on next tick
     setTimeout(flushCommands)
+  }
+
+  async function strikeLastLog () {
+    if (!logging) {
+      return;
+    }
+
+    return new Promise((res, rej) => {
+      console.log('getting fs stat, which is inexplicably hanging: ' + logPath);
+      fs.stat(logPath, (err, stat) => {
+        console.log('stats', stat);
+        if (err) throw err;
+        console.log('truncating')
+        fs.truncate(logPath, stat.size - 1, (err) => {
+          console.log('truncated')
+          if (err) return rej(err)
+          res()
+        })
+      })
+    })
   }
 }
 
@@ -101,5 +153,4 @@ function serializeReply ({ result, error }) {
   } else {
     return inspect(result, opts)
   }
-
 }
