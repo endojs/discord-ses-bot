@@ -49,7 +49,7 @@ function createMachine ({
 
       const { result, error } = executeLoggable(loggable, msg)
       let stringReply = serializeReply({ error, result })
-      if (stringReply > REPLY_LIMIT) {
+      if (stringReply.length > REPLY_LIMIT) {
         const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
         stringReply = stringReply.slice(0, REPLY_LIMIT - replyTruncactionMessage.length) + replyTruncactionMessage
       }
@@ -165,7 +165,7 @@ function createMachine ({
 }
 
 function serializeReply ({ result, error }) {
-  const opts = { showHidden: true, depth: 1 }
+  const opts = { depth: 1 }
   if (error) {
     return `Error Thrown: ${inspect(error, opts)}`
   } else {
