@@ -45,6 +45,18 @@ test('send', async (t) => {
   t.deepEqual(my.likes, 2)
 })
 
+test('oog rollback', async (t) => {
+  const { replayPast, runner: { getSystemState } } = createMachine()
+  const msgResults = await replayPast([
+    `1: my.likes = 100`,
+    `2: for (;;) {    }`,
+  ])
+  const { authorsState } = await getSystemState()
+  const author = authorsState['1']
+  const { my } = author
+  t.deepEqual(my.likes, 100)
+})
+
 function ensureNoErrors (t, msgResults) {
   msgResults.forEach(({ error, result }) => {
     if (error) throw error
