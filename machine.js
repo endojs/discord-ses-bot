@@ -15,8 +15,10 @@ import { spawn } from 'child_process'
 // const defaultLogPath = path.join(__dirname, 'log.txt')
 const REPLY_LIMIT = 2000
 
+const decoder = new TextDecoder();
 
 main()
+
 
 async function main () {
   const worker = xsnap({
@@ -24,17 +26,21 @@ async function main () {
     spawn,
   });
   await worker.evaluate(`
-    // Incrementer, running on XS.
-    function handleCommand(message) {
-      const number = Number(String.fromArrayBuffer(message));
-      return ArrayBuffer.fromString(String(number + 1));
+    const compartment = new Compartment();
+    function handleCommand(request) {
+      const command = String.fromArrayBuffer(request);
+      let result = compartment.evaluate(command);
+      if (result === undefined) {
+        result = null;
+      }
+      return ArrayBuffer.fromString(JSON.stringify(result, null, 4))
     }
   `);
-  const response = await worker.issueCommand('1');
-  await worker.snapshot('bootstrap.xss');
+  const response = await worker.issueStringCommand('1+1');
+  // await worker.snapshot('bootstrap.xss');
   await worker.close();
 
-  console.log('ye')
+  console.log(response)
 }
 
 
