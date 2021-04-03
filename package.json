@@ -8,7 +8,8 @@
     "lint": "eslint './*.js'",
     "lint:fix": "eslint './*.js' --fix",
     "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/",
-    "start": "node -r esm ./machine.js"
+    "start": "node -r esm ./machine.js",
+    "keepRunning": "nodemon -r esm ./machine.js",
   },
   "author": "<dan@danfinlay.com>",
   "license": "ISC",
