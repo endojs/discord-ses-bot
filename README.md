@@ -21,3 +21,8 @@ A member can have SES-bot print their ID by calling "/eval id".
 ```
 Then run `yarn` and `yarn start`.
 To resume after a crash, maybe use `nodemon index.js`.
+
+## Moving between machines
+
+As long as you move your `config.json` and `log.txt` file to the root of this repository, you can resume your machine state on another machine, in another folder, or whatever.
+
