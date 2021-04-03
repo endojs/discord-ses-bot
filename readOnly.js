@@ -38,29 +38,29 @@ function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Ref
   return new Proxy({}, {
     // read hooks
     get: (_, ...args) => {
-      return handlers.get(target, ...args)
+      return resultTransform(handlers.get(target, ...args))
     },
     getOwnPropertyDescriptor: (_, ...args) => {
-      return handlers.getOwnPropertyDescriptor(target, ...args)
+      return resultTransform(handlers.getOwnPropertyDescriptor(target, ...args))
     },
     getPrototypeOf: (_, ...args) => {
-      return handlers.getPrototypeOf(target, ...args)
+      return resultTransform(handlers.getPrototypeOf(target, ...args))
     },
     has: (_, ...args) => {
-      return handlers.has(target, ...args)
+      return resultTransform(handlers.has(target, ...args))
     },
     isExtensible: (_, ...args) => {
-      return handlers.isExtensible(target, ...args)
+      return resultTransform(handlers.isExtensible(target, ...args))
     },
     ownKeys: (_, ...args) => {
-      return handlers.ownKeys(target, ...args)
+      return resultTransform(handlers.ownKeys(target, ...args))
     },
     // fn/constructor hooks
     apply: (_, ...args) => {
-      return handlers.apply(target, ...args)
+      return resultTransform(handlers.apply(target, ...args))
     },
     construct: (_, ...args) => {
-      return handlers.construct(target, ...args)
+      return resultTransform(handlers.construct(target, ...args))
     },
     // mutation hooks
     defineProperty: (_, ...args) => {
