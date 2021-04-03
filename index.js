@@ -94,6 +94,7 @@ function help () {
   You can also add objects to your "share" object, to make them available to everyone.
   You can find the objects others have shared in your "others" object, by their ID.
   A member can have SES-bot print their ID by calling "/eval id".
+  You can read my source code here: https://github.com/danfinlay/discord-ses-bot
   `;
 }
 
