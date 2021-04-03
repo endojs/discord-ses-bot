@@ -34,10 +34,11 @@ client.on('message', msg => {
   const authorId = msg.author.id
   const message = msg.content
 
-  if (message.indexOf('/eval') === 0) {
+  const messagePrefix = '$'
+  if (message.indexOf(messagePrefix) === 0) {
     // This is a command for us!
 
-    const command = message.substr(6) // Cut off the 'eval' prefix
+    const command = message.substr(messagePrefix.length) // Cut off the 'eval' prefix
     const loggable = `${authorId}: ${command}`
     appendLoggable(loggable, msg)
   }
