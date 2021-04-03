@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava test/*.js",
     "lint": "eslint './*.js'",
     "lint:fix": "eslint './*.js' --fix"
   },
@@ -16,6 +16,7 @@
     "ses": "^0.12.6"
   },
   "devDependencies": {
+    "ava": "^3.15.0",
     "eslint": "^7.23.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",

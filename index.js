@@ -1,12 +1,7 @@
-/* global lockdown */
 const { appKey, appToken } = require('./config.json')
 const {
-  appendLoggable,
-  replayPast
+  createMachine
 } = require('./machine')
-
-require('ses')
-lockdown()
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
@@ -23,7 +18,13 @@ const client = new Client({
 
 client.login(appToken)
 
-replayPast()
+const machine = createMachine()
+const {
+  appendLoggable,
+  replayPastFromLog
+} = machine
+
+replayPastFromLog()
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
