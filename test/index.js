@@ -19,6 +19,16 @@ test('share', (t) => {
   t.deepEqual(my.likes, 2)
 })
 
+test('share number', (t) => {
+  const { replayPast, authorMap } = createMachine()
+  const msgResults = replayPast([
+    `1: id`,
+    `2: debugger; others['1'].xyz = true`,
+  ])
+  t.falsy(msgResults[0].error)
+  t.truthy(msgResults[1].error)
+})
+
 test('send', (t) => {
   const { replayPast, authorMap } = createMachine()
   const msgResults = replayPast([

@@ -116,7 +116,7 @@ function createMachine ({
     if (!inboxes.has(to)) {
       throw new Error(`no inbox for user "${to}"`)
     }
-    let recipientBox = inboxes.get(to)
+    const recipientBox = inboxes.get(to)
 
     let myBox = recipientBox[from]
     if (!myBox) {
