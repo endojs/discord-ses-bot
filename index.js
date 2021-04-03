@@ -67,6 +67,21 @@ function createUser (id) {
     my: {},
     id: harden(id),
     share: shareBox,
+    send: (to, label, object) => {
+      let recipientBox = inboxes[to];
+      if (!recipientBox) {
+        recipientBox = {};
+        inboxes[to] = recipientBox;
+      }
+
+      let myBox = recipientBox[id];
+      if (!myBox) {
+        myBox = {};
+        recipientBox[id] = myBox;
+      }
+
+      myBox[label] = object;
+    },
     inbox: {},
     others: createReadable(shareBoxes),
     print: harden(console.log),
@@ -92,6 +107,8 @@ function help () {
   You can't assign variables in these commands, but you have a "my" object you can hang variables on.
   You can also add objects to your "share" object, to make them available to everyone.
   You can find the objects others have shared in your "others" object, by their ID.
+  You can send an object to a specific user by calling "send(otherId, label, object)".
+  They can access objects sent from you at their "inbox[yourId][yourLabel]".
   A member can have SES-bot print their ID by calling "/eval id".
   You can read my source code here: https://github.com/danfinlay/discord-ses-bot
   `;
