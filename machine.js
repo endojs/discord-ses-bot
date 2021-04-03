@@ -1,33 +1,45 @@
 /* global lockdown, Compartment */
 
-const fs = require('fs')
-const path = require('path')
-const { inspect } = require('util')
-const xsnap = require('xsnap');
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+import { inspect } from 'util'
+import { xsnap } from '@agoric/xsnap'
+import { spawn } from 'child_process'
 
-const defaultLogPath = path.join(__dirname, 'log.txt')
+// import { dirname } from 'path';
+// import { fileURLToPath } from 'url';
+// const __filename = fileURLToPath(import.meta.url)
+// const __dirname = dirname(__filename);
+
+// const defaultLogPath = path.join(__dirname, 'log.txt')
 const REPLY_LIMIT = 2000
 
-module.exports = {
-  createMachine
+
+main()
+
+async function main () {
+  const worker = xsnap({
+    os: os.type(),
+    spawn,
+  });
+  await worker.evaluate(`
+    // Incrementer, running on XS.
+    function handleCommand(message) {
+      const number = Number(String.fromArrayBuffer(message));
+      return ArrayBuffer.fromString(String(number + 1));
+    }
+  `);
+  const response = await worker.issueCommand('1');
+  await worker.snapshot('bootstrap.xss');
+  await worker.close();
+
+  console.log('ye')
 }
 
 
-const worker = xsnap();
-await worker.evaluate(`
-  // Incrementer, running on XS.
-  function handleCommand(message) {
-    const number = Number(String.fromArrayBuffer(message));
-    return ArrayBuffer.fromString(String(number + 1));
-  }
-`);
-await worker.snapshot('bootstrap.xss');
-await worker.close();
 
-
-
-
-function createMachine ({
+export function createMachine ({
   logPath = defaultLogPath
 } = {}) {
   const authorMap = new Map()

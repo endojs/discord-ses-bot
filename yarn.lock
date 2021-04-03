@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@agoric/acorn-eventual-send@^2.1.5-dev.0":
-  version "2.1.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/acorn-eventual-send/-/acorn-eventual-send-2.1.5-dev.0.tgz#c741cb643872aef990eeba2380904be66bed8ff1"
-  integrity sha512-alGHg7weGh6iM5yfQM8RzmzBe7ugJrZN7wB8PmIKPbWgA8wAqyCjLpMF/QBpNsitEbCZD+r39+ZJlC0tBcOSXw==
+"@agoric/acorn-eventual-send@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@agoric/acorn-eventual-send/-/acorn-eventual-send-2.1.4.tgz#5ca50bb5b4fcc6f5ab5826306f5f6ce52ed9d480"
+  integrity sha512-xFb4fj5bNJIKBVKthCa5ohyjpmIl8fSaesu56KjOovm8VmDYEMVAKpHSjevwR3AsTkjsyEo7N6XJ6Pn5Ozw4Kg==
 
-"@agoric/assert@^0.2.5-dev.0":
-  version "0.2.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.2.5-dev.0.tgz#fc33c44683766c8f305718d110124464b8eac330"
-  integrity sha512-lB9T0AvGTLkuSYss1J6oUfij6jot4I+en42a9T4/hU0yKoCTe3cOhOfr/06Rp3FbF8Upkqq3svNporuukf2sdw==
+"@agoric/assert@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.2.4.tgz#7008709f721f80a2da71c78444a0624687618662"
+  integrity sha512-/s4PpmbUs793aKyVoqIboSSrjKTsMHOrF/ItbtV0H62bypIjglWRnuin6kvs9/BAZN1tX9wwm9Un+2Uc/mIAMQ==
   dependencies:
-    ses "^0.12.5"
+    ses "^0.12.3"
 
 "@agoric/babel-parser@^7.6.4":
   version "7.9.4"
@@ -24,21 +24,21 @@
   resolved "https://registry.npmjs.org/@agoric/babel-standalone/-/babel-standalone-7.9.5.tgz"
   integrity sha512-1Aa23oPuRi4kywUyZODo8zey9Gq2NpD2xUnNvgJLoT8orMQRlVOtvbG3JeHq5sjJERlF/q6csg4/P8t8/5IABA==
 
-"@agoric/base64@^0.1.5-dev.0":
-  version "0.1.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/base64/-/base64-0.1.5-dev.0.tgz#00145103eee923e08e9e8e25538ca66a47d6537d"
-  integrity sha512-AJkSSOpo1omd3RFMtMsa7Oq06PlB1+d0sdqOxs/dMtB3yPkOmczLT63XnNW643Yds2IoEW7NXON+tbgv2N9UDA==
+"@agoric/base64@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@agoric/base64/-/base64-0.1.4.tgz#39e645f033065dc69d8dfb4206425b4166c82e94"
+  integrity sha512-3Ba08LfIjItYQ2ggip/T9DK7gNko5VyZ5Hm2aECA784wPS0LNnaWZ6EpD0+PF8Y84jVQVd1I160aPYv5uUBP2w==
 
-"@agoric/bundle-source@^1.2.5-dev.0":
-  version "1.2.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/bundle-source/-/bundle-source-1.2.5-dev.0.tgz#3451dc42923d91e2f87822e9885c8f0ebc22a9dd"
-  integrity sha512-igKbfrXxaF09TVOa5CefP05Z7rsNCmEk8/pPsaeBAK5yaiSqqxnWw/uUQyGG+REFI69l+cnm5+3UpXWQzUCPjQ==
+"@agoric/bundle-source@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@agoric/bundle-source/-/bundle-source-1.2.4.tgz#973c18dfd1bdeaee81cbeada392d40bc8d30d732"
+  integrity sha512-E/KnNiQ5yWsLnzkAggx5KQAZqy7rGixzpKA3RoO8nFhUtjKraruVE354xz6QH2007Ej+OkxVjTVh63btThECTA==
   dependencies:
-    "@agoric/acorn-eventual-send" "^2.1.5-dev.0"
+    "@agoric/acorn-eventual-send" "^2.1.4"
     "@agoric/babel-parser" "^7.6.4"
-    "@agoric/base64" "^0.1.5-dev.0"
+    "@agoric/base64" "^0.1.4"
     "@agoric/compartment-mapper" "^0.2.3"
-    "@agoric/transform-eventual-send" "^1.4.5-dev.0"
+    "@agoric/transform-eventual-send" "^1.4.4"
     "@babel/generator" "^7.6.4"
     "@babel/traverse" "^7.8.3"
     "@rollup/plugin-commonjs" "~11.0.2"
@@ -56,46 +56,46 @@
   dependencies:
     ses "^0.12.6"
 
-"@agoric/eventual-send@^0.13.5-dev.0":
-  version "0.13.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/eventual-send/-/eventual-send-0.13.5-dev.0.tgz#89e22d1fd3c5acd809dea24b8ca2f1ad5e2d6b90"
-  integrity sha512-FfQmoTnUzhSJ2kkxYCdHeMJ2TawEx7ySZs/3qcjoaRgVoeoHGEnh8GVS0PvaS+Qq/lg4Zv2SCOVNau9kuE0WRQ==
+"@agoric/eventual-send@^0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@agoric/eventual-send/-/eventual-send-0.13.4.tgz#0d34b1b92faf3f5b246a4cc61e743d4f6f8c1017"
+  integrity sha512-IHpXU7qGwyeieJcTdEu/Oz9Doi5TW/7Rz7YdYQm9Gp+BQ23/cBt8Z55yFg56G42dJgD7+uQU6Eev2FF0XBCwwQ==
 
-"@agoric/install-ses@^0.5.5-dev.0":
-  version "0.5.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/install-ses/-/install-ses-0.5.5-dev.0.tgz#e5cae973684f80266af8a94f7359a442f85df953"
-  integrity sha512-6HZXCWHSkeKQKO2Fe3PiEQdHygrbAR+DyIIuJLFeO6ECx8pqPEnXeiROKvww6am4rMPtI0MPx6BPFdUMH1QVWw==
+"@agoric/install-ses@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@agoric/install-ses/-/install-ses-0.5.4.tgz#68ab4e7a7c1e498f59cd1cd1a5cef10676f7976a"
+  integrity sha512-qwj+huCiCkhZ2WjEmXrCDwMglRRORSiDWotVbBYqo8jUBt5ZvfwfvZsxut88QYJRTCAuKefkdik9hdzIr6CrWQ==
   dependencies:
-    "@agoric/eventual-send" "^0.13.5-dev.0"
-    ses "^0.12.5"
+    "@agoric/eventual-send" "^0.13.4"
+    ses "^0.12.3"
 
 "@agoric/make-hardener@^0.1.2":
   version "0.1.3"
   resolved "https://registry.npmjs.org/@agoric/make-hardener/-/make-hardener-0.1.3.tgz"
   integrity sha512-rc9M2ErE/Zu822OLCnAltr957ZVTsBvVZ7KA2unqDpjo3q7PqZF2hWFB1xXD2Qkfwt5exQ3BjFbkj+NUaTg4gA==
 
-"@agoric/transform-eventual-send@^1.4.5-dev.0":
-  version "1.4.5-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/transform-eventual-send/-/transform-eventual-send-1.4.5-dev.0.tgz#fc78f2781ae9bae18e21eebe28c82e6d02088d7a"
-  integrity sha512-x26yFFZ64y1NlKiPEPzMfQZGvWWF31dg396nbjxvVeLTr1oQalQVdMvdrEObmCrLdZFRg6l+K8YC6qU+8iuJuA==
+"@agoric/transform-eventual-send@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@agoric/transform-eventual-send/-/transform-eventual-send-1.4.4.tgz#9e81d5b56fe520e11c933eb1ac1951d211978dbc"
+  integrity sha512-cB3yXvWsiXAmX9o9cVjMvTytCJ2lmq1bJ1NrDVwL2RIDtZyS6sFPsKTA1N+Ge8SFlzcc8lC9/Hkn4RDZ1qCKPQ==
 
 "@agoric/transform-module@^0.4.1":
   version "0.4.1"
   resolved "https://registry.npmjs.org/@agoric/transform-module/-/transform-module-0.4.1.tgz"
   integrity sha512-4TJJHXeXAWu1FCA7yXCAZmhBNoGTB/BEAe2pv+J2X8W/mJTr9b395OkDCSRMpzvmSshLfBx6wT0D7dqWIWEC1w==
 
-"@agoric/xsnap@^0.4.1-dev.0":
-  version "0.4.1-dev.0"
-  resolved "https://registry.yarnpkg.com/@agoric/xsnap/-/xsnap-0.4.1-dev.0.tgz#4f13bf4be4bff9f12a1add764af5470a79bc3669"
-  integrity sha512-IHe90HlKyS/ilxMhaM29wxUUrOO+bkVRYQBJKb84NC+3sJ/uQ7TSxyFivHGfqSy8aNz+cw1oYLWNhSiqFerYoA==
+"@agoric/xsnap@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@agoric/xsnap/-/xsnap-0.4.0.tgz#3e18773cc0cdaed740a5657fbb3f311b5d18ed29"
+  integrity sha512-yKw53H8YvOiQvJov2iRsI7uM533xxdI7dhUha+nRUUFSqcHhC3cvAi0AKoqwZ9Mzil5yojxvhD0Hihgci5FYPg==
   dependencies:
-    "@agoric/assert" "^0.2.5-dev.0"
-    "@agoric/bundle-source" "^1.2.5-dev.0"
-    "@agoric/eventual-send" "^0.13.5-dev.0"
-    "@agoric/install-ses" "^0.5.5-dev.0"
+    "@agoric/assert" "^0.2.4"
+    "@agoric/bundle-source" "^1.2.4"
+    "@agoric/eventual-send" "^0.13.4"
+    "@agoric/install-ses" "^0.5.4"
     esm "^3.2.5"
     glob "^7.1.6"
-    ses "^0.12.5"
+    ses "^0.12.3"
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -2660,7 +2660,7 @@ serialize-error@^7.0.1:
   dependencies:
     type-fest "^0.13.1"
 
-ses@^0.12.3, ses@^0.12.5, ses@^0.12.6:
+ses@^0.12.3, ses@^0.12.6:
   version "0.12.6"
   resolved "https://registry.npmjs.org/ses/-/ses-0.12.6.tgz"
   integrity sha512-NXV6K/6nxqnORv0/Kc+HtdIubdPZr6EXNUu/TMeNla69rSxhhAH7huKKaG8GBOhX87RyiDYz/31IlJR+1xUbdg==
