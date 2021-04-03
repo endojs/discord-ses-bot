@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const { inspect } = require('util')
 require('ses')
 const {
   createReadOnlyMapProxy,
@@ -49,11 +50,9 @@ function createMachine ({
 
       let stringReply
       if (error) {
-        stringReply = `Error: ${error.message}`
-      } else if (result === undefined) {
-        stringReply = 'No result.'
+        stringReply = `Error Thrown: ${inspect(error, { showHidden: true })}`
       } else {
-        stringReply = JSON.stringify(result, null, 2)
+        stringReply = inspect(result, { showHidden: true })
       }
 
       console.log(`> ${stringReply}`)
