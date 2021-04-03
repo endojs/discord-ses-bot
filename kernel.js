@@ -23,7 +23,10 @@ function handleCommand (request) {
   try {
     result = author.compartment.evaluate(command)
   } catch (err) {
-    error = err
+    error = {
+      message: err.message,
+      stack: err.stack,
+    }
   }
   return serializeOutput({ error, result })
 }
