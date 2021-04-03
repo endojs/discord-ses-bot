@@ -58,40 +58,47 @@ function getAuthor (id) {
   return author
 }
 
-const shareBoxes = {}
-const inboxes = {}
+const shareBoxes = new Map()
+const inboxes = new Map()
 function createUser (id) {
   const shareBox = {}
-  shareBoxes[id] = shareBox
+  shareBoxes.set(id, shareBox)
   const inbox = {}
-  inboxes[id] = inbox
+  inboxes.set(id, inbox)
   const compartment = new Compartment({
+    id: id,
     my: {},
-    id: harden(id),
     share: shareBox,
-    send: (to, label, object) => {
-      let recipientBox = inboxes[to]
-      if (!recipientBox) {
-        recipientBox = {}
-        inboxes[to] = recipientBox
-      }
-
-      let myBox = recipientBox[id]
-      if (!myBox) {
-        myBox = {}
-        recipientBox[id] = myBox
-      }
-
-      myBox[label] = object
-    },
     inbox,
     others: createReadable(shareBoxes),
-    print: harden(console.log),
-    help
+    print: console.log,
+    help,
+    send: (to, label, value) => {
+      sendValueBetweenAuthors(id, to, label, value)
+    }
   })
   return {
     compartment
   }
+}
+
+function sendValueBetweenAuthors (from, to, label, value) {
+  if (!inboxes.has(to)) {
+    throw new Error(`no inbox for user "${to}"`)
+  }
+  let recipientBox = inboxes.get(to)
+  if (!recipientBox) {
+    recipientBox = {}
+    inboxes.set(to, recipientBox)
+  }
+
+  let myBox = recipientBox[from]
+  if (!myBox) {
+    myBox = {}
+    recipientBox[from] = myBox
+  }
+
+  myBox[label] = value
 }
 
 function createReadable (obj) {
