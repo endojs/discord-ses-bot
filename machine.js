@@ -50,7 +50,7 @@ function createMachine ({
       let stringReply
       if (error) {
         stringReply = `Error: ${error.message}`
-      } else if (stringReply === undefined) {
+      } else if (result === undefined) {
         stringReply = 'No result.'
       } else {
         stringReply = JSON.stringify(result, null, 2)
