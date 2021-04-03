@@ -1,11 +1,9 @@
-const test = require('ava')
-const {
-  createMachine
-} = require('../machine')
+import test from 'ava';
+import { createMachine } from '../machine';
 
-test('share', (t) => {
-  const { replayPast, authorMap } = createMachine()
-  const msgResults = replayPast([
+test('share', async (t) => {
+  const { replayPast, runner: { getSystemState } } = createMachine()
+  const msgResults = await replayPast([
     `1: my.likes = 0`,
     `1: my.like = () => my.likes++`,
     `1: my.like()`,
@@ -14,14 +12,15 @@ test('share', (t) => {
     `2: others['1'].like()`,
   ])
   ensureNoErrors(t, msgResults)
-  const author = authorMap.get('1')
-  const { my } = author.compartment.globalThis
+  const { authorsState } = await getSystemState()
+  const author = authorsState['1']
+  const { my } = author
   t.deepEqual(my.likes, 2)
 })
 
-test('share number', (t) => {
-  const { replayPast, authorMap } = createMachine()
-  const msgResults = replayPast([
+test('share number', async (t) => {
+  const { replayPast, runner: { getSystemState } } = createMachine()
+  const msgResults = await replayPast([
     `1: id`,
     `2: debugger; others['1'].xyz = true`,
   ])
@@ -29,9 +28,9 @@ test('share number', (t) => {
   t.truthy(msgResults[1].error)
 })
 
-test('send', (t) => {
-  const { replayPast, authorMap } = createMachine()
-  const msgResults = replayPast([
+test('send', async (t) => {
+  const { replayPast, runner: { getSystemState } } = createMachine()
+  const msgResults = await replayPast([
     `1: my.likes = 0`,
     `1: my.like = () => my.likes++`,
     `1: my.like()`,
@@ -40,8 +39,9 @@ test('send', (t) => {
     `2: inbox['1'].like()`,
   ])
   ensureNoErrors(t, msgResults)
-  const author = authorMap.get('1')
-  const { my } = author.compartment.globalThis
+  const { authorsState } = await getSystemState()
+  const author = authorsState['1']
+  const { my } = author
   t.deepEqual(my.likes, 2)
 })
 

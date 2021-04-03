@@ -2,44 +2,65 @@ const { appKey, appToken } = require('./config.json')
 const {
   createMachine
 } = require('./machine')
+const { Client } = require('discord.js')
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
-
 const link = `https://discord.com/oauth2/authorize?client_id=${appKey}&scope=bot`
-console.log(`Starting SES-bot! Add to your discord server with this link: \n${link}`)
 
-const { Client } = require('discord.js')
-const client = new Client({
-  client_id: appKey,
-  scope: 'bot',
-  permissions: PERMISSIONS_INT
-})
+main()
 
-client.login(appToken)
+async function main () {
+  console.log(`Starting SES-bot! Add to your discord server with this link: \n${link}`)
 
-const machine = createMachine()
-const {
-  appendLoggable,
-  replayPastFromLog
-} = machine
+  const client = new Client({
+    client_id: appKey,
+    scope: 'bot',
+    permissions: PERMISSIONS_INT
+  })
 
-replayPastFromLog()
+  client.login(appToken)
+  const machine = createMachine()
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`)
-})
+  const commandBuffer = []
+  let isRunning = true
 
-client.on('message', msg => {
-  const authorId = msg.author.id
-  const message = msg.content
+  client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`)
+  })
 
-  const messagePrefix = '$'
-  if (message.indexOf(messagePrefix) === 0) {
+  client.on('message', async msg => {
+    const authorId = msg.author.id
+    const message = msg.content
+
+    const messagePrefix = '$'
+    if (message.indexOf(messagePrefix) !== 0) {
+      return
+    }
+
     // This is a command for us!
-
     const command = message.substr(messagePrefix.length) // Cut off the 'eval' prefix
     const loggable = `${authorId}: ${command}`
-    appendLoggable(loggable, msg)
+    commandBuffer.push({ loggable, msg })
+    flushCommands()
+  })
+
+  await machine.replayPastFromLog()
+  isRunning = false
+  await flushCommands()
+
+  async function flushCommands () {
+    // if we're already running, do nothing
+    if (isRunning) {
+      return
+    }
+    if (commandBuffer.length === 0) return
+    // handle next command
+    isRunning = true
+    const { loggable, msg } = commandBuffer.shift()
+    await machine.appendLoggable(loggable, msg)
+    isRunning = false
+    // continue flushing on next tick
+    setTimeout(flushCommands)
   }
-})
+}
