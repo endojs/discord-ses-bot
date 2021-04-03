@@ -6,13 +6,6 @@ import { createRunner } from './runner'
 const REPLY_LIMIT = 2000
 const defaultLogPath = path.join(__dirname, 'log.txt')
 
-main()
-
-async function main () {
-  const machine = createMachine()
-  await machine.replayPastFromLog()
-  await machine.runner.close()
-}
 
 export function createMachine ({
   logPath = defaultLogPath

@@ -29,7 +29,12 @@ export function createRunner () {
     if (!isInitialized) {
       await initiailize()
     }
-    const response = await worker.issueStringCommand(JSON.stringify({ authorId, command }))
+    let response
+    try {
+      response = await worker.issueStringCommand(JSON.stringify({ authorId, command }))
+    } catch (err) {
+      return { error: err }
+    }
     return JSON.parse(response.reply)
   }
 
