@@ -12,6 +12,7 @@ const {
 lockdown()
 
 const defaultLogPath = path.join(__dirname, 'log.txt')
+const REPLY_LIMIT = 2000
 
 module.exports = {
   createMachine
@@ -47,12 +48,10 @@ function createMachine ({
       console.log(loggable)
 
       const { result, error } = executeLoggable(loggable, msg)
-
-      let stringReply
-      if (error) {
-        stringReply = `Error Thrown: ${inspect(error, { showHidden: true })}`
-      } else {
-        stringReply = inspect(result, { showHidden: true })
+      let stringReply = serializeReply({ error, result })
+      if (stringReply > REPLY_LIMIT) {
+        const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
+        stringReply = stringReply.slice(0, REPLY_LIMIT - replyTruncactionMessage.length) + replyTruncactionMessage
       }
 
       console.log(`> ${stringReply}`)
@@ -162,5 +161,14 @@ function createMachine ({
     A member can have SES-bot print their ID by calling "/eval id".
     You can read my source code here: https://github.com/danfinlay/discord-ses-bot
     `
+  }
+}
+
+function serializeReply ({ result, error }) {
+  const opts = { showHidden: true, depth: 1 }
+  if (error) {
+    return `Error Thrown: ${inspect(error, opts)}`
+  } else {
+    return inspect(result, opts)
   }
 }
