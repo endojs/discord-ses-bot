@@ -4,14 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava test/*.js",
+    "start": "node -r esm ./index.js",
+    "keepRunning": "nodemon -r esm ./index.js",
+    "test": "ava",
     "lint": "eslint './*.js'",
-    "lint:fix": "eslint './*.js' --fix"
+    "lint:fix": "eslint './*.js' --fix",
+    "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/",
+    "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ],
+    "require": [
+      "esm"
+    ],
+    "timeout": "2m"
   },
   "author": "<dan@danfinlay.com>",
   "license": "ISC",
   "repository": "https://github.com/danfinlay/discord-ses-bot.git",
   "dependencies": {
+    "@agoric/xsnap": "^0.4.0",
     "discord.js": "^12.5.2",
     "ses": "^0.12.6"
   },
