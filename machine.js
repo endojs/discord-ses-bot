@@ -6,18 +6,22 @@ import { createRunner } from './runner'
 const REPLY_LIMIT = 2000
 const defaultLogPath = path.join(__dirname, 'log.txt')
 
-
 export function createMachine ({
   logPath = defaultLogPath
 } = {}) {
   const runner = createRunner()
+  const commandBuffer = [];
+  let isRunning = false;
 
   return {
     runner,
     appendLoggable,
     executeLoggable,
     replayPast,
-    replayPastFromLog
+    replayPastFromDisk,
+    getLogFromDisk,
+    flushCommands,
+    commandBuffer,
   }
 
   async function appendLoggable (loggable, msg) {
@@ -42,11 +46,10 @@ export function createMachine ({
     return { result, error }
   }
 
-  async function replayPastFromLog () {
+  async function getLogFromDisk () {
     let logFile
     try {
       logFile = await fs.readFile(logPath, 'utf8')
-      console.log('replaying logFile')
     } catch (err) {
       if (err.code === 'ENOENT') {
         console.log('No logfile found, starting new one.')
@@ -57,6 +60,11 @@ export function createMachine ({
       }
     }
     const loggableCommands = logFile.split('\n')
+    return loggableCommands;
+  }
+
+  async function replayPastFromDisk () {
+    const loggableCommands = await getLogFromDisk();
     await replayPast(loggableCommands)
   }
 
@@ -69,6 +77,21 @@ export function createMachine ({
     }
     return results
   }
+
+  async function flushCommands () {
+    // if we're already running, do nothing
+    if (isRunning) {
+      return
+    }
+    if (commandBuffer.length === 0) return
+    // handle next command
+    isRunning = true
+    const { loggable, msg } = commandBuffer.shift()
+    await appendLoggable(loggable, msg)
+    isRunning = false
+    // continue flushing on next tick
+    setTimeout(flushCommands)
+  }
 }
 
 function serializeReply ({ result, error }) {
@@ -78,4 +101,5 @@ function serializeReply ({ result, error }) {
   } else {
     return inspect(result, opts)
   }
+
 }

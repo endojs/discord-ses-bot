@@ -3,6 +3,8 @@ const {
   createMachine
 } = require('./machine')
 const { Client } = require('discord.js')
+import { promises as fs } from 'fs'
+import path from 'path'
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
@@ -25,6 +27,9 @@ async function main () {
   client.login(appToken)
   const machine = createMachine()
 
+  /**
+   * CHAT MESSAGE HANDLING
+   */
   const commandBuffer = []
   let isRunning = true
 
@@ -32,34 +37,30 @@ async function main () {
     const authorId = msg.author.id
     const message = msg.content
 
+    const simulatePrefix = '?'
     const messagePrefix = '$'
-    if (message.indexOf(messagePrefix) !== 0) {
+    if (![simulatePrefix, messagePrefix].includes(message[0])) {
       return
     }
 
     // This is a command for us!
     const command = message.substr(messagePrefix.length) // Cut off the 'eval' prefix
     const loggable = `${authorId}: ${command}`
-    commandBuffer.push({ loggable, msg })
-    flushCommands()
+ 
+    // For simulated calls, invoke a new machine to try it.
+    if (simulatePrefix === message[0]) {
+      const commands = await machine.getLogFromDisk()
+      const counterfactual = createMachine()
+      counterfactual.replayPast(commands)
+      counterfactual.commandBuffer.push({ loggable, msg })
+      return counterfactual.flushCommands()
+    }
+
+    machine.commandBuffer.push({ loggable, msg })
+    machine.flushCommands()
   })
 
-  await machine.replayPastFromLog()
-  isRunning = false
-  await flushCommands()
-
-  async function flushCommands () {
-    // if we're already running, do nothing
-    if (isRunning) {
-      return
-    }
-    if (commandBuffer.length === 0) return
-    // handle next command
-    isRunning = true
-    const { loggable, msg } = commandBuffer.shift()
-    await machine.appendLoggable(loggable, msg)
-    isRunning = false
-    // continue flushing on next tick
-    setTimeout(flushCommands)
-  }
+  await machine.replayPastFromDisk()
+  machine.isRunning = false
+  await machine.flushCommands()
 }

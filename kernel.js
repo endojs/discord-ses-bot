@@ -1,5 +1,20 @@
 // this code runs inside xsnap
 
+function help () {
+  return `Welcome to SES-bot!
+  
+  You can run JavaScript commands with the "$" prefix, and they are run in your own personal SES container!
+  You can't assign variables in these commands, but you have a "my" object you can hang variables on.
+  You can also add objects to your "share" object, to make them available to everyone.
+  You can find the objects others have shared in your "others" object, by their ID.
+  You can send an object to a specific user by calling "send(otherId, label, object)".
+  They can access objects sent from you at their "inbox[yourId][yourLabel]".
+  A member can have SES-bot print their ID by calling "/eval id".
+  You can safely try out a command without committing to it with the "?" prefix.
+  You can read my source code here: https://github.com/danfinlay/discord-ses-bot
+  `
+}
+
 const authorMap = new Map()
 const shareBoxes = new Map()
 const inboxes = new Map()
@@ -185,20 +200,6 @@ function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Ref
       throw new Error('createReadOnlyProxy: mutation not allowed')
     }
   })
-}
-
-function help () {
-  return `Welcome to SES-bot!
-  
-  You can run JavaScript commands with the "$" prefix, and they are run in your own personal SES container!
-  You can't assign variables in these commands, but you have a "my" object you can hang variables on.
-  You can also add objects to your "share" object, to make them available to everyone.
-  You can find the objects others have shared in your "others" object, by their ID.
-  You can send an object to a specific user by calling "send(otherId, label, object)".
-  They can access objects sent from you at their "inbox[yourId][yourLabel]".
-  A member can have SES-bot print their ID by calling "/eval id".
-  You can read my source code here: https://github.com/danfinlay/discord-ses-bot
-  `
 }
 
 function mapToObj (map) {
