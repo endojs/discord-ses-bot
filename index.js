@@ -6,8 +6,8 @@ const logPath = path.join(__dirname, 'log.txt');
 require('ses');
 lockdown();
 
+// This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168;
-
 
 const link = `https://discord.com/oauth2/authorize?client_id=${appKey}&scope=bot`;
 console.log(`Starting SES-bot! Add to your discord server with this link: \n${link}`);
@@ -19,7 +19,6 @@ const client = new Client({
   scope: 'bot',
   permissions: PERMISSIONS_INT,
 });
-
 
 function executeLoggable (loggable, msg) {
   console.log(loggable);
