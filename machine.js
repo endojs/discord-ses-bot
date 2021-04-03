@@ -88,8 +88,12 @@ function createMachine ({
   }
 
   function createUser (id) {
+    // for sharing publicly, multicast
+    // set via "share"
     const shareBox = {}
     shareBoxes.set(id, shareBox)
+    // for sharing privately, unicast
+    // receives from "send"
     const inbox = {}
     inboxes.set(id, inbox)
     const compartment = new Compartment({
@@ -115,10 +119,6 @@ function createMachine ({
       throw new Error(`no inbox for user "${to}"`)
     }
     let recipientBox = inboxes.get(to)
-    if (!recipientBox) {
-      recipientBox = {}
-      inboxes.set(to, recipientBox)
-    }
 
     let myBox = recipientBox[from]
     if (!myBox) {
