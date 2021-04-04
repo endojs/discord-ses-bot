@@ -1,5 +1,6 @@
 import { inspect } from 'util'
-import { promises as fs } from 'fs'
+import { promises as pfs } from 'fs'
+import fs from 'fs'
 import path from 'path'
 const defaultLogPath = path.join(__dirname, 'log.txt')
 // LMDB bindings need to be imported before lockdown.
@@ -86,21 +87,27 @@ async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
   await ensureLogfileExists()
 
   const stream = fs.createReadStream(defaultLogPath)
-  for await (entry of stream) {
-    console.log(entry)
-    const { authorId, command } = JSON.parse(entry)
-    await swingsetRunner.handleMessage(authorId, command)
+  for await (let chunk of stream) {
+    if (chunk) {
+      const stringChunk = chunk.toString('utf8')
+      const entries = stringChunk.split('\n')
+      for (let entry of entries) {
+        console.log(entry)
+        const { authorId, command } = JSON.parse(entry)
+        const response = await swingsetRunner.handleMessage(authorId, command)
+      }
+    }
   }
 }
 
 async function ensureLogfileExists () {
   let logFile
   try {
-    logFile = await fs.stat(logPath, 'utf8')
+    logFile = await pfs.stat(defaultLogPath, 'utf8')
   } catch (err) {
     if (err.code === 'ENOENT') {
       console.log('No logfile found, starting new one.')
-      await fs.writeFile(logPath, '{"id":"0","command":"0"}')
+      await pfs.writeFile(defaultLogPath, '{"id":"0","command":"0"}')
     } else {
       console.error(err)
       throw err
