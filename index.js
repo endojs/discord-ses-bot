@@ -1,4 +1,7 @@
 import { inspect } from 'util'
+import { promises as fs } from 'fs'
+import path from 'path'
+const defaultLogPath = path.join(__dirname, 'log.txt')
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
 
@@ -76,7 +79,33 @@ async function main () {
     msg.reply(stringReply)
   })
 
-  // await machine.replayPastFromDisk()
+  await replayPastFromDisk(swingsetRunner)
+}
+
+async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
+  await ensureLogfileExists()
+
+  const stream = fs.createReadStream(defaultLogPath)
+  for await (entry of stream) {
+    console.log(entry)
+    const { authorId, command } = JSON.parse(entry)
+    await swingsetRunner.handleMessage(authorId, command)
+  }
+}
+
+async function ensureLogfileExists () {
+  let logFile
+  try {
+    logFile = await fs.stat(logPath, 'utf8')
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log('No logfile found, starting new one.')
+      await fs.writeFile(logPath, '{"id":"0","command":"0"}')
+    } else {
+      console.error(err)
+      throw err
+    }
+  }
 }
 
 function serializeReply ({ result, error }) {
