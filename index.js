@@ -3,8 +3,6 @@ const {
   createMachine
 } = require('./machine')
 const { Client } = require('discord.js')
-import { promises as fs } from 'fs'
-import path from 'path'
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
@@ -30,8 +28,6 @@ async function main () {
   /**
    * CHAT MESSAGE HANDLING
    */
-  const commandBuffer = []
-  let isRunning = true
 
   client.on('message', async msg => {
     const authorId = msg.author.id
@@ -44,9 +40,9 @@ async function main () {
     }
 
     // This is a command for us!
-    const command = message.substr(messagePrefix.length) // Cut off the 'eval' prefix
-    const loggable = `${authorId}: ${command}`
- 
+    const command = message.substr(messagePrefix.length) // Cut off the prefix
+    const loggable = { id: authorId, command }
+
     // For simulated calls, invoke a new machine to try it.
     if (simulatePrefix === message[0]) {
       const commands = await machine.getLogFromDisk()
@@ -54,16 +50,13 @@ async function main () {
         // We don't need to remember this state
         logging: false
       })
-      counterfactual.replayPast(commands)
-      counterfactual.commandBuffer.push({ loggable, msg })
-      return counterfactual.flushCommands()
+      await counterfactual.replayPast(commands)
+      counterfactual.queue({ loggable, msg })
+      return
     }
 
-    machine.commandBuffer.push({ loggable, msg })
-    machine.flushCommands()
+    machine.queue({ loggable, msg })
   })
 
   await machine.replayPastFromDisk()
-  machine.isRunning = false
-  await machine.flushCommands()
 }

@@ -19,17 +19,17 @@ test('share', async (t) => {
 })
 
 test('share number', async (t) => {
-  const { replayPast, runner: { getSystemState } } = createMachine()
+  const { replayPast, getSystemState } = createMachine()
   const msgResults = await replayPast([
     `1: id`,
-    `2: debugger; others['1'].xyz = true`,
+    `2: others['1'].xyz = true`,
   ])
   t.falsy(msgResults[0].error)
   t.truthy(msgResults[1].error)
 })
 
 test('send', async (t) => {
-  const { replayPast, runner: { getSystemState } } = createMachine()
+  const { replayPast, getSystemState } = createMachine()
   const msgResults = await replayPast([
     `1: my.likes = 0`,
     `1: my.like = () => my.likes++`,
@@ -46,7 +46,7 @@ test('send', async (t) => {
 })
 
 test('oog rollback', async (t) => {
-  const { replayPast, runner: { getSystemState } } = createMachine()
+  const { replayPast, getSystemState } = createMachine()
   const msgResults = await replayPast([
     `1: my.likes = 100`,
     `2: for (;;) {    }`,

@@ -33,7 +33,7 @@ export function createRunner () {
     try {
       response = await worker.issueStringCommand(JSON.stringify({ authorId, command }))
     } catch (err) {
-      err.terminal = true;
+      err.fatal = true
       return { error: err }
     }
     return JSON.parse(response.reply)
@@ -45,6 +45,11 @@ export function createRunner () {
   }
 
   async function close () {
-    await worker.close()
+    try {
+      await worker.close()
+    } catch (error) {
+      console.warn(error)
+      await worker.terminate()
+    }
   }
 }

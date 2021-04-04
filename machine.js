@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
+import { nextTick } from 'process'
 import { inspect } from 'util'
 import { createRunner } from './runner'
 
@@ -8,39 +9,52 @@ const defaultLogPath = path.join(__dirname, 'log.txt')
 
 export function createMachine ({
   logPath = defaultLogPath,
-  logging = true,
+  logging = true
 } = {}) {
-
   let runner = createRunner()
-  let commandBuffer = [];
-  let isRunning = false;
+  let commandBuffer = []
+  let isRunning = false
 
   return {
-    runner,
+    getSystemState: () => runner.getSystemState(),
     appendLoggable,
     executeLoggable,
     replayPast,
     replayPastFromDisk,
     getLogFromDisk,
     flushCommands,
-    commandBuffer,
+    queue
+  }
+
+  function queue (opts) {
+    commandBuffer.push(opts)
+    nextTick(flushCommands)
   }
 
   async function appendLoggable (loggable, msg) {
-    await fs.appendFile(logPath, '\n' + JSON.stringify(loggable))
+    await fs.appendFile(logPath, createLogLine(loggable))
+  }
+
+  function createLogLine (loggable) {
+    return '\n' + JSON.stringify(loggable)
   }
 
   async function executeLoggable (loggable, msg) {
     const { id, command } = loggable
+    console.log(command)
     const { result, error } = await runner.runCommand(id, command)
     return { result, error }
   }
 
   async function restart () {
-    runner.close()
+    await runner.close()
+    console.log('runner closed')
     runner = createRunner()
-    replayPastFromDisk()
+    console.log('new runner created', runner)
+    await replayPastFromDisk()
+    console.log('replayed past from disk')
     commandBuffer = []
+    isRunning = false
   }
 
   async function getLogFromDisk () {
@@ -56,23 +70,29 @@ export function createMachine ({
         throw err
       }
     }
-    const loggableCommands = logFile.split('\n').map(JSON.parse)
-    return loggableCommands;
+    const loggableCommands = logFile.split('\n').map((entry) => {
+      console.log(entry)
+      return JSON.parse(entry)
+    })
+    return loggableCommands
   }
 
   async function replayPastFromDisk () {
-    const loggableCommands = await getLogFromDisk();
+    const loggableCommands = await getLogFromDisk()
     await replayPast(loggableCommands)
   }
 
   async function replayPast (loggableCommands) {
+    isRunning = true
     const results = []
     for (const command of loggableCommands) {
       const result = await executeLoggable(command)
       console.log(`${command}:`)
-      console.log(result);
+      console.log(result)
       results.push(result)
     }
+    isRunning = false
+    nextTick(flushCommands)
     return results
   }
 
@@ -86,8 +106,9 @@ export function createMachine ({
     isRunning = true
     const { loggable, msg } = commandBuffer.shift()
 
-    // Commit to running message 
+    // Commit to running message
     if (logging) {
+      console.log('append loggable: ', loggable)
       await appendLoggable(loggable, msg)
     }
 
@@ -95,19 +116,18 @@ export function createMachine ({
     const { result, error } = await executeLoggable(loggable)
     stringReply = serializeReply({ error, result })
 
-    if (error && error.terminal) {
-      console.log('we have caught an executeLoggable error')
-      console.error(error);
+    if (error && error.fatal) {
+      console.log('we have caught a fatal error')
+      console.error(error)
 
       // If we can't execute that command, we need to purge it from the logs
       // So that replays don't also throw crashing errors.
-      console.log('removing command from logs')
       await strikeLastLog(loggable)
-      console.log('removed from logs they say, restarting')
 
+      console.log('restarting')
       await restart()
       console.log('restarted')
-      stringReply = `Terminal Error, state reverted.`
+      stringReply = 'Fatal Error, state reverted.'
     }
 
     if (stringReply.length > REPLY_LIMIT) {
@@ -124,24 +144,14 @@ export function createMachine ({
     setTimeout(flushCommands)
   }
 
-  async function strikeLastLog () {
+  async function strikeLastLog (loggable) {
     if (!logging) {
-      return;
+      return
     }
+    const stringMessage = createLogLine(loggable)
 
-    return new Promise((res, rej) => {
-      console.log('getting fs stat, which is inexplicably hanging: ' + logPath);
-      fs.stat(logPath, (err, stat) => {
-        console.log('stats', stat);
-        if (err) throw err;
-        console.log('truncating')
-        fs.truncate(logPath, stat.size - 1, (err) => {
-          console.log('truncated')
-          if (err) return rej(err)
-          res()
-        })
-      })
-    })
+    const stat = await fs.stat(logPath)
+    await fs.truncate(logPath, stat.size - stringMessage.length)
   }
 }
 

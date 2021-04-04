@@ -40,7 +40,7 @@ function handleCommand (request) {
   } catch (err) {
     error = {
       message: err.message,
-      stack: err.stack,
+      stack: err.stack
     }
   }
   return serializeOutput({ error, result })
