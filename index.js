@@ -8,13 +8,7 @@ import './install-ses'
 
 import { createSwingsetRunner } from './swingset-main.js'
 
-
 const { appKey, appToken } = require('./config.json')
-const {
-  createMachine
-} = require('./machine')
-
-
 const { Client } = require('discord.js')
 
 const REPLY_LIMIT = 2000
@@ -56,7 +50,7 @@ async function main () {
 
     // This is a command for us!
     const command = message.substr(messagePrefix.length) // Cut off the prefix
-    const loggable = { id: authorId, command }
+    // const loggable = { id: authorId, command }
 
     // // For simulated calls, invoke a new machine to try it.
     // if (simulatePrefix === message[0]) {

@@ -1,4 +1,4 @@
-export function createKernel () { 
+export function createKernel () {
   const authorMap = new Map()
   const shareBoxes = new Map()
   const inboxes = new Map()
@@ -28,11 +28,11 @@ export function createKernel () {
     const { authorId, command } = request
 
     if (authorId === 'system' && command === 'systemState') {
-      return serializeOutput({
+      return {
         authorsState: getAuthorsState(),
         shareBoxes: mapToObj(shareBoxes),
         inboxes: mapToObj(inboxes)
-      })
+      }
     }
 
     const author = getAuthor(authorId)
@@ -46,16 +46,7 @@ export function createKernel () {
       }
     }
     return { error, result }
-    // return serializeOutput({ error, result })
   }
-
-  // function serializeOutput (value) {
-  //   try {
-  //     return ArrayBuffer.fromString(JSON.stringify(value, null, 2))
-  //   } catch (err) {
-  //     return ArrayBuffer.fromString('{ "error": "<failed to serialize result>" }')
-  //   }
-  // }
 
   function getAuthorsState () {
     const state = {}
