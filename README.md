@@ -19,16 +19,8 @@ A member can have SES-bot print their ID by calling "/eval id".
   "publicKey": "YOUR_PUBLIC_KEY"
 }
 ```
-Then run `yarn` and `yarn start`.
+Then run `yarn`, `yarn build`, and `yarn start`.
 To resume after a crash, maybe use `nodemon index.js`.
-
-## Mac M1 Extra
-
-Currently `xsnap` does not ship with a mac `M1` build of the XS Engine, but this module includes one, which will copy it to the appropriate place with one command:
-
-```
-cp -r xsnap-build ./node_modules/@agoric/xsnap/build
-```
 
 ## Moving between machines
 
