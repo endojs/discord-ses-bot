@@ -65,7 +65,8 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    const { result, error } = await swingsetRunner.handleMessage(authorId, command)
+    const stringResponse = await swingsetRunner.handleMessage(authorId, command)
+    const { error, result } = deserializeResponse(stringResponse)
     // console.log(`${authorId}: "${command}": ${result}`)
     let stringReply = serializeReply({ error, result })
     if (stringReply.length > REPLY_LIMIT) {
@@ -85,5 +86,13 @@ function serializeReply ({ result, error }) {
     return `Error Thrown: ${inspect(error, opts)}`
   } else {
     return inspect(result, opts)
+  }
+}
+
+function deserializeResponse (stringResponse) {
+  try {
+    return JSON.parse(stringResponse)
+  } catch (err) {
+    return { error: err }
   }
 }

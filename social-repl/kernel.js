@@ -45,7 +45,7 @@ export function createKernel () {
         stack: err.stack
       }
     }
-    return { error, result }
+    return serializeOutput({ error, result })
   }
 
   function getAuthorsState () {
@@ -198,5 +198,13 @@ export function createKernel () {
 
   function mapToObj (map) {
     return Object.fromEntries(map.entries())
+  }
+}
+
+function serializeOutput (value) {
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch (err) {
+    return '{ "error": "<failed to serialize result>" }'
   }
 }
