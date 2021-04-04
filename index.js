@@ -1,7 +1,20 @@
+
+// LMDB bindings need to be imported before lockdown.
+import 'node-lmdb'
+
+// Now do lockdown.
+import './swingset/install-optional-global-metering'
+import './install-ses'
+
+import { createSwingsetRunner } from './swingset-main.js'
+
+
 const { appKey, appToken } = require('./config.json')
 const {
   createMachine
 } = require('./machine')
+
+
 const { Client } = require('discord.js')
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
@@ -23,7 +36,8 @@ async function main () {
   })
 
   client.login(appToken)
-  const machine = createMachine()
+  // const machine = createMachine()
+  const swingsetRunner = await createSwingsetRunner()
 
   /**
    * CHAT MESSAGE HANDLING
@@ -43,20 +57,21 @@ async function main () {
     const command = message.substr(messagePrefix.length) // Cut off the prefix
     const loggable = { id: authorId, command }
 
-    // For simulated calls, invoke a new machine to try it.
-    if (simulatePrefix === message[0]) {
-      const commands = await machine.getLogFromDisk()
-      const counterfactual = createMachine({
-        // We don't need to remember this state
-        logging: false
-      })
-      await counterfactual.replayPast(commands)
-      counterfactual.queue({ loggable, msg })
-      return
-    }
+    // // For simulated calls, invoke a new machine to try it.
+    // if (simulatePrefix === message[0]) {
+    //   const commands = await machine.getLogFromDisk()
+    //   const counterfactual = createMachine({
+    //     // We don't need to remember this state
+    //     logging: false
+    //   })
+    //   await counterfactual.replayPast(commands)
+    //   counterfactual.queue({ loggable, msg })
+    //   return
+    // }
 
-    machine.queue({ loggable, msg })
+    // machine.queue({ loggable, msg })
+    await swingsetRunner.handleMessage(authorId, command)
   })
 
-  await machine.replayPastFromDisk()
+  // await machine.replayPastFromDisk()
 }

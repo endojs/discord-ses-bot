@@ -14,6 +14,14 @@ import 'node-lmdb'
 import './swingset/install-optional-global-metering'
 import './install-ses'
 
-import { main } from './swingset-main.js'
+import { createSwingsetRunner } from './swingset-main.js'
 
 main()
+.catch(console.error)
+
+async function main () {
+  const runner = await createSwingsetRunner()
+  await runner.handleMessage('haaaay wuuuuurl')
+  console.log('done')
+}
+

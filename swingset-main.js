@@ -155,13 +155,12 @@ function generateIndirectConfig (baseConfig) {
 /**
  * Command line utility to run a swingset for development and testing purposes.
  */
-export async function main () {
-  const argv = process.argv.splice(2)
+export async function createSwingsetRunner () {
 
   let forceReset = false
   let dbMode = '--lmdb'
   let blockSize = 200
-  let batchSize = 200
+  // let batchSize = 200
   let blockMode = false
   let logTimes = false
   let logMem = false
@@ -177,7 +176,7 @@ export async function main () {
   let dumpTag = 't'
   let rawMode = false
   let shouldPrintStats = false
-  let globalMeteringActive = false
+  // let globalMeteringActive = false
   let meterVats = false
   let launchIndirectly = false
   let benchmarkRounds = 0
@@ -186,143 +185,11 @@ export async function main () {
   let dbDir = null
   let initOnly = false
 
-  while (argv[0] && argv[0].startsWith('-')) {
-    const flag = argv.shift()
-    switch (flag) {
-      case '--init':
-        forceReset = true
-        break
-      case '--initonly':
-        forceReset = true
-        initOnly = true
-        break
-      case '--logtimes':
-        logTimes = true
-        break
-      case '--logmem':
-        logMem = true
-        break
-      case '--logdisk':
-        logDisk = true
-        break
-      case '--logstats':
-        logStats = true
-        break
-      case '--logall':
-        logTimes = true
-        logMem = true
-        logDisk = true
-        logStats = true
-        break
-      case '--logtag':
-        logTag = argv.shift()
-        break
-      case '--slog':
-        slogFile = argv.shift()
-        break
-      case '--config':
-        configPath = argv.shift()
-        break
-      case '--forcegc':
-        forceGC = true
-        break
-      case '--blockmode':
-        blockMode = true
-        break
-      case '--blocksize':
-        blockSize = Number(argv.shift())
-        break
-      case '--batchsize':
-        batchSize = Number(argv.shift())
-        break
-      case '--benchmark':
-        benchmarkRounds = Number(argv.shift())
-        break
-      case '--dump':
-        doDumps = true
-        break
-      case '--dumpdir':
-        dumpDir = argv.shift()
-        doDumps = true
-        break
-      case '--dumptag':
-        dumpTag = argv.shift()
-        doDumps = true
-        break
-      case '--dbdir':
-        dbDir = argv.shift()
-        break
-      case '--raw':
-        rawMode = true
-        doDumps = true
-        break
-      case '--stats':
-        shouldPrintStats = true
-        break
-      case '--statsfile':
-        statsFile = argv.shift()
-        break
-      case '--globalmetering':
-        globalMeteringActive = true
-        break
-      case '--meter':
-        meterVats = true
-        globalMeteringActive = true
-        launchIndirectly = true
-        break
-      case '--indirect':
-        launchIndirectly = true
-        break
-      case '--audit':
-        doAudits = true
-        break
-      case '--filedb':
-      case '--memdb':
-      case '--lmdb':
-        dbMode = flag
-        break
-      case '-v':
-      case '--verbose':
-        verbose = true
-        break
-      default:
-        fail(`invalid flag ${flag}`, true)
-    }
-  }
+  // case '--init':
+  forceReset = true
 
-  const command = argv.shift()
-  if (
-    command !== 'run' &&
-    command !== 'shell' &&
-    command !== 'step' &&
-    command !== 'batch' &&
-    command !== 'help'
-  ) {
-    fail(`'${command}' is not a valid runner command`, true)
-  }
-  if (command === 'help') {
-    usage()
-    process.exit(0)
-  }
-
-  if (globalMeteringActive) {
-    log('global metering is active')
-  }
-
-  if (forceGC) {
-    if (!globalThis.gc) {
-      fail(
-        'To use --forcegc you must start node with the --expose-gc command line option'
-      )
-    }
-    if (!logMem) {
-      log('Warning: --forcegc without --logmem may be a mistake')
-    }
-  }
-
-  // Prettier demands that the conditional not be parenthesized.  Prettier is wrong.
-  let basedir = (argv[0] === '--' || argv[0] === undefined) ? '.' : argv.shift()
-  const bootstrapArgv = argv[0] === '--' ? argv.slice(1) : argv
+  let basedir = 'social-repl'
+  const bootstrapArgv = []
 
   let config
   if (configPath) {
@@ -443,11 +310,16 @@ export async function main () {
 
   // initialize
   await runBatch(0, blockMode)
-  // deliver the message
-  await devices.bridge.deliverInbound('x', 'y')
-  // run the message
-  await runBatch(0, blockMode)
 
+  // return a swingsetRunner api
+  return {
+    async handleMessage (...args) {
+      // deliver the message
+      await devices.bridge.deliverInbound(...args)
+      // run the message
+      await runBatch(0, blockMode)
+    }
+  }
 
   // switch (command) {
   //   case 'run': {

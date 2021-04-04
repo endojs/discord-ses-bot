@@ -7,9 +7,8 @@ log('=> loading bootstrap.js')
 
 const inboundHandler = harden({
   inbound (...args) {
-    log(`host says hi ${args}`)
+    log(`bootstrap vat saw: ${args}`)
     // no return value
-    return 123
   }
 })
 
