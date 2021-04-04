@@ -31,10 +31,8 @@ export function createMachine ({
   }
 
   async function executeLoggable (loggable, msg) {
-    const components = loggable.split(':')
-    const authorId = components.shift()
-    const command = components.join(':')
-    const { result, error } = await runner.runCommand(authorId, command)
+    const { id, command } = loggable
+    const { result, error } = await runner.runCommand(id, command)
     return { result, error }
   }
 
@@ -52,13 +50,13 @@ export function createMachine ({
     } catch (err) {
       if (err.code === 'ENOENT') {
         console.log('No logfile found, starting new one.')
-        await fs.writeFile(logPath, '0:0\n')
+        await fs.writeFile(logPath, '{"id":"0","command":"0"}')
       } else {
         console.error(err)
         throw err
       }
     }
-    const loggableCommands = logFile.split('\n')
+    const loggableCommands = logFile.split('\n').map(JSON.parse)
     return loggableCommands;
   }
 
@@ -70,7 +68,7 @@ export function createMachine ({
   async function replayPast (loggableCommands) {
     const results = []
     for (const command of loggableCommands) {
-      const result = await executeLoggable(JSON.parse(command))
+      const result = await executeLoggable(command)
       console.log(`${command}:`)
       console.log(result);
       results.push(result)
