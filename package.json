@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r esm ./index.js",
+    "dev": "node -r esm swingset-runner.js --init run social-repl",
     "keepRunning": "nodemon -r esm ./index.js",
     "test": "ava",
     "lint": "eslint './*.js'",
     "lint:fix": "eslint './*.js' --fix",
-    "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/",
     "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/"
   },
   "ava": {
@@ -25,8 +25,13 @@
   "license": "ISC",
   "repository": "https://github.com/danfinlay/discord-ses-bot.git",
   "dependencies": {
+    "@agoric/stat-logger": "^0.4.5-dev.0",
+    "@agoric/swing-store-lmdb": "^0.4.5-dev.0",
+    "@agoric/swing-store-simple": "^0.3.5-dev.0",
+    "@agoric/swingset-vat": "^0.14.1-dev.0",
     "@agoric/xsnap": "^0.4.0",
     "discord.js": "^12.5.2",
+    "node-lmdb": "^0.9.4",
     "ses": "^0.12.6"
   },
   "devDependencies": {
