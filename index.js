@@ -70,7 +70,8 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    await swingsetRunner.handleMessage(authorId, command)
+    const result = await swingsetRunner.handleMessage(authorId, command)
+    console.log(`${authorId}: "${command}": ${result}`)
   })
 
   // await machine.replayPastFromDisk()

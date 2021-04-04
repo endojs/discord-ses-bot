@@ -210,8 +210,17 @@ export async function createSwingsetRunner () {
 
   let endowments = {}
 
+  let messageResponsePromises = {}
+  function doOutboundBridge (msgId, value) {
+    if (!messageResponsePromises[msgId]) {
+      console.warn('outbound missing msg id', msgId)
+      return
+    }
+    messageResponsePromises[msgId].resolve(value)
+  }
+
   // add devices
-  const { deviceConfig, deviceEndowments, devices } = prepareDevices()
+  const { deviceConfig, deviceEndowments, devices } = prepareDevices({ doOutboundBridge })
   // append deviceConfig
   config.devices = {
     ...deviceConfig,
@@ -312,12 +321,18 @@ export async function createSwingsetRunner () {
   await runBatch(0, blockMode)
 
   // return a swingsetRunner api
+  let messageCount = 0
   return {
     async handleMessage (...args) {
+      const messageId = messageCount
+      messageCount++
+      const deferred = defer()
+      messageResponsePromises[messageId] = deferred
       // deliver the message
-      await devices.bridge.deliverInbound(...args)
+      await devices.bridge.deliverInbound(messageId, ...args)
       // run the message
       await runBatch(0, blockMode)
+      return deferred.promise
     }
   }
 
@@ -582,4 +597,16 @@ export async function createSwingsetRunner () {
       log(`runner finished replay in ${deltaT} ns`)
     }
   }
+}
+
+function defer() {
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  assert(resolve !== undefined);
+  assert(reject !== undefined);
+  return { promise, resolve, reject };
 }

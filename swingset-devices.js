@@ -2,10 +2,10 @@ import {
   buildBridge
 } from '@agoric/swingset-vat'
 
-export function prepareDevices () {
+export function prepareDevices ({ doOutboundBridge }) {
   function bridgeOutbound (dstID, obj) {
-    console.warn('would outbound bridge', dstID, obj)
-    // return doOutboundBridge(dstID, obj);
+    // console.warn('would outbound bridge', dstID, obj)
+    return doOutboundBridge(dstID, obj);
   }
   const bridgeDevice = buildBridge(bridgeOutbound)
   const deviceConfig = {
