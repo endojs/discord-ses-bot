@@ -27,7 +27,7 @@ export function createMachine ({
   }
 
   async function appendLoggable (loggable, msg) {
-    await fs.appendFile(logPath, loggable + '\n')
+    await fs.appendFile(logPath, '\n' + JSON.stringify(loggable))
   }
 
   async function executeLoggable (loggable, msg) {
@@ -70,8 +70,9 @@ export function createMachine ({
   async function replayPast (loggableCommands) {
     const results = []
     for (const command of loggableCommands) {
-      // console.log(command)
-      const result = await executeLoggable(command)
+      const result = await executeLoggable(JSON.parse(command))
+      console.log(`${command}:`)
+      console.log(result);
       results.push(result)
     }
     return results
