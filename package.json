@@ -8,8 +8,8 @@
     "dev": "node -r esm swingset-runner.js --init run social-repl",
     "keepRunning": "nodemon -r esm ./index.js",
     "test": "ava",
-    "lint": "eslint './*.js'",
-    "lint:fix": "eslint './*.js' --fix",
+    "lint": "eslint './**/*.js'",
+    "lint:fix": "eslint './**/*.js' --fix",
     "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/"
   },
   "ava": {

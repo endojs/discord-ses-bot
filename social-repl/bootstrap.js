@@ -1,20 +1,31 @@
-import { E } from '@agoric/eventual-send';
+/* global harden */
+import { E } from '@agoric/eventual-send'
 
-const log = console.log;
+const log = console.log
 
-log(`=> loading bootstrap.js`);
+log('=> loading bootstrap.js')
 
-export function buildRootObject(_vatPowers) {
-  log(`=> setup called`);
+const inboundHandler = harden({
+  inbound (...args) {
+    log(`host says hi ${args}`)
+    // no return value
+    return 123
+  }
+})
+
+export function buildRootObject (vatPowers) {
+  log('=> setup called')
+  const { D /* testLog */ } = vatPowers
   return harden({
-    bootstrap(vats) {
-      log('=> bootstrap() called');
+    bootstrap (vats, devices) {
+      log('=> bootstrap() called')
+      D(devices.bridge).registerInboundHandler(inboundHandler)
       E(vats.alice)
         .sayHelloTo(vats.bob)
         .then(
           r => log(`=> alice.hello(bob) resolved to '${r}'`),
-          e => log(`=> alice.hello(bob) rejected as '${e}'`),
-        );
-    },
-  });
+          e => log(`=> alice.hello(bob) rejected as '${e}'`)
+        )
+    }
+  })
 }

@@ -8,13 +8,12 @@
  */
 
 // LMDB bindings need to be imported before lockdown.
-import 'node-lmdb';
+import 'node-lmdb'
 
 // Now do lockdown.
-import './swingset/install-optional-global-metering';
-import './install-ses';
+import './swingset/install-optional-global-metering'
+import './install-ses'
 
+import { main } from './swingset-main.js'
 
-import { main } from './swingset/main.js';
-
-main();
+main()
