@@ -18,7 +18,7 @@ export function createRunner () {
     worker = xsnap({
       os: os.type(),
       spawn,
-      meteringLimit: 1e8,
+      meteringLimit: 1e8
     })
     const kernelSrc = await fs.readFile(path.join(__dirname, 'kernel.js'), 'utf8')
     await worker.evaluate(kernelSrc)
