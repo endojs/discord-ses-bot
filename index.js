@@ -1,4 +1,4 @@
-
+import { inspect } from 'util'
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
 
@@ -17,6 +17,7 @@ const {
 
 const { Client } = require('discord.js')
 
+const REPLY_LIMIT = 2000
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
 const link = `https://discord.com/oauth2/authorize?client_id=${appKey}&scope=bot`
@@ -70,9 +71,25 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    const result = await swingsetRunner.handleMessage(authorId, command)
-    console.log(`${authorId}: "${command}": ${result}`)
+    const { result, error } = await swingsetRunner.handleMessage(authorId, command)
+    // console.log(`${authorId}: "${command}": ${result}`)
+    let stringReply = serializeReply({ error, result })
+    if (stringReply.length > REPLY_LIMIT) {
+      const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
+      stringReply = stringReply.slice(0, REPLY_LIMIT - replyTruncactionMessage.length) + replyTruncactionMessage
+    }
+
+    msg.reply(stringReply)
   })
 
   // await machine.replayPastFromDisk()
+}
+
+function serializeReply ({ result, error }) {
+  const opts = { depth: 1 }
+  if (error) {
+    return `Error Thrown: ${inspect(error, opts)}`
+  } else {
+    return inspect(result, opts)
+  }
 }
