@@ -94,7 +94,7 @@ async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
       for (let entry of entries) {
         console.log(entry)
         const { authorId, command } = JSON.parse(entry)
-        const response = await swingsetRunner.handleMessage(authorId, command)
+        await swingsetRunner.handleMessage(authorId, command)
       }
     }
   }
