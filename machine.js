@@ -27,11 +27,11 @@ export async function createMachine () {
       ...deviceConfig
     },
     bundles: {
-      room: {
-        sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-room.js')
-      },
       author: {
         sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-author.js')
+      },
+      zcf: {
+        sourceSpec: require.resolve('@agoric/zoe/contractFacet')
       }
     }
   }

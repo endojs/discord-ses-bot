@@ -27,7 +27,10 @@
   "repository": "https://github.com/danfinlay/discord-ses-bot.git",
   "dependencies": {
     "@agoric/bundle-source": "^1.2.5-dev.0",
+    "@agoric/cosmic-swingset": "^0.28.0-dev.0",
+    "@agoric/dapp-svelte-wallet": "^0.8.0-dev.0",
     "@agoric/ertp": "^0.10.2-dev.0",
+    "@agoric/registrar": "^0.2.5-dev.0",
     "@agoric/stat-logger": "^0.4.5-dev.0",
     "@agoric/swing-store-lmdb": "^0.4.5-dev.0",
     "@agoric/swing-store-simple": "^0.3.5-dev.0",
