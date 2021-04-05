@@ -46,13 +46,6 @@ export function buildRootObject (vatPowers) {
       const authorMap = new Map()
       const { timer, issuers, makePayments } = createZoeThings()
 
-      // // make social-repl vat
-      // const roomVat = await E(vatMaker).createVatByName('room', {
-      //   metered: true,
-      //   vatParameters: {}
-      // })
-      // log('bootstrap: roomVat created')
-
       const inboundHandler = harden({
         async inbound (msgId, authorId, command) {
           log(`bootstrap: command - "${authorId}" runs "${command}"`)
@@ -126,13 +119,7 @@ async function createAuthor ({ vatMaker, zoe, issuers, makePayments, installatio
     // metered: true,
     vatParameters: {}
   })
-  // Setup Alice
-  console.log('zoe', Array.isArray(zoe))
-  console.log('issuers', Array.isArray(issuers)) // true
-  console.log('makePayments(values)', Array.isArray(makePayments(values))) // true
-  console.log('installations', Array.isArray(installations))
-  console.log('timer', Array.isArray(timer))
-
+  // Setup Author
   const payments = makePayments(values)
   const wrappedPayments = {
     moola: payments[0],

@@ -356,18 +356,6 @@ export async function createSwingsetRunner ({
     }
   }
 
-  // kumavis: include bundle sources?
-  // let bundleSourceSpecContainer
-  // if (launchIndirectly) {
-  //   bundleSourceSpecContainer = config.vats.launcher.parameters.config.vats
-  // } else {
-  //   bundleSourceSpecContainer = config.vats
-  // }
-  // config.bundles = {
-  //   room: { ...bundleSourceSpecContainer.room },
-  //   ...(config.bundles || {})
-  // }
-
   console.log(JSON.stringify(config, null, 2))
 
   if (!dbDir) {
