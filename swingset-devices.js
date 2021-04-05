@@ -18,24 +18,8 @@ export function prepareDevices ({ doOutboundBridge }) {
       ...bridgeDevice.endowments
     }
   }
-  // config.devices = {
-  //   bridge: {
-  //     sourceSpec: bd.srcPath,
-  //   },
-  //   mailbox: {
-  //     sourceSpec: mb.srcPath,
-  //   },
-  //   timer: {
-  //     sourceSpec: timer.srcPath,
-  //   },
-  // };
-  // const deviceEndowments = {
-  //   bridge: { ...bd.endowments },
-  //   mailbox: { ...mb.endowments },
-  //   timer: { ...timer.endowments },
-  // };
   const devices = {
     bridge: bridgeDevice
   }
-  return { deviceConfig, deviceEndowments, devices }
+  return { devices, deviceConfig, deviceEndowments }
 }

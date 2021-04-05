@@ -7,7 +7,7 @@ import 'node-lmdb'
 import './swingset/install-optional-global-metering'
 import './install-ses'
 
-import { createSwingsetRunner } from './swingset-main.js'
+import { createMachine } from './machine.js'
 
 const { appKey, appToken } = require('./config.json')
 const { Client } = require('discord.js')
@@ -16,6 +16,10 @@ const REPLY_LIMIT = 2000
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168
 const link = `https://discord.com/oauth2/authorize?client_id=${appKey}&scope=bot`
+
+process.on('unhandledRejection', error => {
+  console.log('unhandledRejection', error.stack)
+})
 
 main()
 
@@ -32,8 +36,7 @@ async function main () {
   })
 
   client.login(appToken)
-  // const machine = createMachine()
-  const swingsetRunner = await createSwingsetRunner()
+  const machine = await createMachine()
 
   /**
    * CHAT MESSAGE HANDLING
@@ -66,9 +69,13 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    const stringResponse = await swingsetRunner.handleMessage(authorId, command)
-    const { error, result } = deserializeResponse(stringResponse)
-    // console.log(`${authorId}: "${command}": ${result}`)
+    let response
+    try {
+      response = await machine.handleMessage(authorId, command)
+    } catch (err) {
+      response = { error: err }
+    }
+    const { error, result } = response
     let stringReply = serializeReply({ error, result })
     if (stringReply.length > REPLY_LIMIT) {
       const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
@@ -85,13 +92,5 @@ function serializeReply ({ result, error }) {
     return `Error Thrown: ${inspect(error, opts)}`
   } else {
     return inspect(result, opts)
-  }
-}
-
-function deserializeResponse (stringResponse) {
-  try {
-    return JSON.parse(stringResponse)
-  } catch (err) {
-    return { error: err }
   }
 }
