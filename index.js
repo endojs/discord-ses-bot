@@ -1,5 +1,5 @@
 import { inspect } from 'util'
-import { promises as pfs, rm } from 'fs'
+import { promises as pfs } from 'fs'
 import fs from 'fs'
 import path from 'path'
 const defaultLogPath = path.join(__dirname, 'log.txt')
@@ -100,7 +100,7 @@ async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
     }
   }
 
-  await rm(defaultLogPath);
+  await pfs.rm(defaultLogPath);
 }
 
 async function ensureLogfileExists () {
