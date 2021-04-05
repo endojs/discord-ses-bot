@@ -555,7 +555,8 @@ export async function createSwingsetRunner ({
   // kumavis: i added exports
   return {
     bootstrapResult,
-    run: () => runBatch(0, true),
+    run: () => runBatch(0, false),
+    commit: () => store.commit(),
     commandRun
   }
 

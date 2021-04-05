@@ -27,28 +27,67 @@ export async function createMachine () {
     }
   }
 
-  const swingetRunner = await createSwingsetRunner({
+  const swingsetRunner = await createSwingsetRunner({
     basedir: 'social-repl',
     config,
-    endowments: deviceEndowments
-    // devices,
+    endowments: deviceEndowments,
     // below are options triggered by --meter flag
-    // meterVats: true,
-    // globalMeteringActive: true,
+    meterVats: true,
+    globalMeteringActive: true
     // launchIndirectly: true
   })
 
+  let aborting = false
+
   // return a swingsetRunner api
   return {
-    async handleMessage (...args) {
-      const msg = createMessage()
-      // deliver the message
-      await devices.bridge.deliverInbound(msg.id, ...args)
-      // run the message
-      await swingetRunner.run()
-      // resolved when handleMessageResponse is called with the matching id
-      return msg.promise
+    handleMessage
+  }
+
+  async function handleMessage (...args) {
+    if (aborting) {
+      return { error: new Error('restarting, please wait...') }
     }
+    try {
+      const stringResponse = await runMessage(...args)
+      const response = deserializeResponse(stringResponse)
+      // no failure - commit message and continue
+      swingsetRunner.commit()
+      return response
+    } catch (err) {
+      aborting = true
+      console.error(err)
+      // allow time to respond, then exit (and restart)
+      setTimeout(() => process.exit(1), 200)
+      return { error: err }
+    }
+  }
+
+  // we cant seem to detect "Compute meter exceeded" (eg inf loop)
+  // with `swingsetRunner.run`. Additionally, the kernel
+  // seems to hang in response to a inf-loop, so we
+  // error here if the `swingsetRunner.run` completed
+  // without responding via the bridge device.
+  // then handleMessage can close the process
+  // which hopefully will be restarted
+  async function runMessage (...args) {
+    const msg = createMessage()
+    // deliver the message
+    await devices.bridge.deliverInbound(msg.id, ...args)
+    // run the message
+    try {
+      // "Compute meter exceeded" does not throw here
+      await swingsetRunner.run()
+    } catch (err) {
+      // not aware of any errors that make it here
+      console.log('errored', err)
+      // msg.reject(err)
+      msg.resolve({ error: err })
+    } finally {
+      msg.destroy('machine failed to respond to message, reverting...')
+    }
+    // resolved when handleMessageResponse is called with the matching id
+    return msg.promise
   }
 }
 
@@ -63,15 +102,20 @@ function createMessageManager () {
       return
     }
     messageResponsePromises[msgId].resolve(value)
-    delete messageResponsePromises[msgId]
   }
 
   function createMessage () {
-    const messageId = messageCount
+    const msgId = messageCount
     messageCount++
     const deferred = defer()
-    messageResponsePromises[messageId] = deferred
-    return { id: messageId, promise: deferred.promise }
+    messageResponsePromises[msgId] = deferred
+    return { id: msgId, destroy, ...deferred }
+
+    function destroy (errMsg = 'message destroyed before resolution') {
+      // this rejection is ignored if it already resolved
+      messageResponsePromises[msgId].reject(new Error(errMsg))
+      delete messageResponsePromises[msgId]
+    }
   }
 }
 
@@ -86,4 +130,12 @@ function defer () {
   assert(resolve !== undefined)
   assert(reject !== undefined)
   return { promise, resolve, reject }
+}
+
+function deserializeResponse (stringResponse) {
+  try {
+    return JSON.parse(stringResponse)
+  } catch (err) {
+    return { error: err }
+  }
 }

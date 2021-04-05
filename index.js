@@ -17,6 +17,10 @@ const REPLY_LIMIT = 2000
 const PERMISSIONS_INT = 2147503168
 const link = `https://discord.com/oauth2/authorize?client_id=${appKey}&scope=bot`
 
+process.on('unhandledRejection', error => {
+  console.log('unhandledRejection', error.stack)
+})
+
 main()
 
 async function main () {
@@ -65,9 +69,13 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    const stringResponse = await machine.handleMessage(authorId, command)
-    const { error, result } = deserializeResponse(stringResponse)
-    // console.log(`${authorId}: "${command}": ${result}`)
+    let response
+    try {
+      response = await machine.handleMessage(authorId, command)
+    } catch (err) {
+      response = { error: err }
+    }
+    const { error, result } = response
     let stringReply = serializeReply({ error, result })
     if (stringReply.length > REPLY_LIMIT) {
       const replyTruncactionMessage = `\n(reply truncated... length: ${stringReply.length})`
@@ -84,13 +92,5 @@ function serializeReply ({ result, error }) {
     return `Error Thrown: ${inspect(error, opts)}`
   } else {
     return inspect(result, opts)
-  }
-}
-
-function deserializeResponse (stringResponse) {
-  try {
-    return JSON.parse(stringResponse)
-  } catch (err) {
-    return { error: err }
   }
 }
