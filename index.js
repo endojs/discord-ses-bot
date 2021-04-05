@@ -1,4 +1,5 @@
 import { inspect } from 'util'
+
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
 
@@ -76,8 +77,6 @@ async function main () {
 
     msg.reply(stringReply)
   })
-
-  // await machine.replayPastFromDisk()
 }
 
 function serializeReply ({ result, error }) {

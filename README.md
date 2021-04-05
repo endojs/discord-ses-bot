@@ -26,5 +26,8 @@ If the `yarn` step fails on an M1 mac, consider installing the `node-canvas` nat
 
 ## Moving between machines
 
-As long as you move your `config.json` and `log.txt` file to the root of this repository, you can resume your machine state on another machine, in another folder, or whatever.
+As long as you move your `config.json` and `social-repl/swingset-kernel-state/` files to a new version of this repository, you can resume your machine state on another machine, in another folder, or whatever.
 
+## Some Notes on Swingset
+
+Most of our SwingSet is copied directly from Agoric's libraries. The `swingset` folder is for files that are copied ver batim. The `swingset-*.js` files in the root directory are customized.
