@@ -89,11 +89,11 @@ function generateIndirectConfig (baseConfig) {
  * Command line utility to run a swingset for development and testing purposes.
  */
 export async function createSwingsetRunner () {
-  let forceReset = false
+  const forceReset = false
   const dbMode = '--lmdb'
   const blockSize = 200
   // let batchSize = 200
-  const blockMode = false
+  // const blockMode = false
   const logTimes = false
   const logMem = false
   const logDisk = false

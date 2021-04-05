@@ -1,8 +1,5 @@
 import { inspect } from 'util'
-import { promises as pfs } from 'fs'
-import fs from 'fs'
-import path from 'path'
-const defaultLogPath = path.join(__dirname, 'log.txt')
+
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
 
