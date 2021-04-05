@@ -27,6 +27,7 @@ import { E } from '@agoric/eventual-send'
 import { makeBoard } from '@agoric/cosmic-swingset/lib/ag-solo/vats/lib-board'
 import { makeWallet } from '@agoric/dapp-svelte-wallet/api/src/lib-wallet'
 
+import { createKernel } from './kernel'
 // import '../src/types';
 
 // const ZOE_INVITE_PURSE_PETNAME = 'Default Zoe invite purse';
@@ -77,6 +78,8 @@ export function buildRootObject (vatPowers) {
         inboxStateChangeHandler
       } = await setupEconomy({ zoe })
 
+      const kernel = createKernel()
+
       const authorMap = new Map()
       // const { timer, issuers, makePayments } = createZoeThings()
 
@@ -87,6 +90,9 @@ export function buildRootObject (vatPowers) {
           let author
           try {
             author = await prepareAuthor(authorId)
+            // this is a noop if already exists
+            // this is how we expose the wallet
+            kernel.createAuthor(authorId, { ...author })
           } catch (err) {
             log('bootstrap: prepareAuthor failed', err)
             response = { error: err }
@@ -95,7 +101,7 @@ export function buildRootObject (vatPowers) {
           // if no error, handle the command
           if (!response) {
             try {
-              response = await E(author.actor).handleCommand(command)
+              response = kernel.handleCommand({ authorId, command })
             } catch (err) {
               log('bootstrap: handleCommand failed')
               response = { error: err }
