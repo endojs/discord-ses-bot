@@ -1,5 +1,5 @@
 import { inspect } from 'util'
-import { promises as pfs } from 'fs'
+import { promises as pfs, rm } from 'fs'
 import fs from 'fs'
 import path from 'path'
 const defaultLogPath = path.join(__dirname, 'log.txt')
@@ -94,11 +94,14 @@ async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
       const entries = stringChunk.split('\n')
       for (let entry of entries) {
         console.log(entry)
-        const { authorId, command } = JSON.parse(entry)
-        await swingsetRunner.handleMessage(authorId, command)
+        const { id, command } = JSON.parse(entry)
+        await swingsetRunner.handleMessage(id, command)
       }
     }
   }
+
+  // If the logs really have been loaded, we should be able to trash them now, the migration is done:
+  // await rm(defaultLogPath);
 }
 
 async function ensureLogfileExists () {
