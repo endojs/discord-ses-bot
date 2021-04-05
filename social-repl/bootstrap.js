@@ -150,22 +150,10 @@ async function createAuthor ({
   rpgBundle
 }) {
   // const values = [100, 100, 100]
-  const vat = await E(vatMaker).createVatByName('author', {
-    // metered: true,
-    vatParameters: {}
-  })
-  // // Setup Author
-  // const payments = makePayments(values)
-  // const wrappedPayments = {
-  //   moola: payments[0],
-  //   simoleans: payments[1],
-  //   bucks: payments[2]
-  // }
-  // const wrappedIssuers = {
-  //   moola: issuers[0],
-  //   simoleans: issuers[1],
-  //   bucks: issuers[2]
-  // }
+  // const vat = await E(vatMaker).createVatByName('author', {
+  //   // metered: true,
+  //   vatParameters: {}
+  // })
 
   const { wallet } = await setupWallet({
     zoe,
@@ -176,8 +164,8 @@ async function createAuthor ({
     pursesStateChangeHandler,
     inboxStateChangeHandler
   })
-  const actor = await E(vat.root).build(wallet)
-  return { actor, wallet, vat }
+  // const actor = await E(vat.root).build(wallet)
+  return { wallet }
 }
 
 async function setupEconomy ({ zoe }) {
