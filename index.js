@@ -100,8 +100,7 @@ async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
     }
   }
 
-  // If the logs really have been loaded, we should be able to trash them now, the migration is done:
-  // await rm(defaultLogPath);
+  await rm(defaultLogPath);
 }
 
 async function ensureLogfileExists () {
@@ -110,7 +109,6 @@ async function ensureLogfileExists () {
     logFile = await pfs.stat(defaultLogPath, 'utf8')
   } catch (err) {
     if (err.code === 'ENOENT') {
-      console.log('No logfile found, starting new one.')
       await pfs.writeFile(defaultLogPath, '{"id":"0","command":"0"}')
     } else {
       console.error(err)
