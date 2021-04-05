@@ -7,7 +7,7 @@ import 'node-lmdb'
 import './swingset/install-optional-global-metering'
 import './install-ses'
 
-import { createSwingsetRunner } from './swingset-main.js'
+import { createMachine } from './machine.js'
 
 const { appKey, appToken } = require('./config.json')
 const { Client } = require('discord.js')
@@ -32,8 +32,7 @@ async function main () {
   })
 
   client.login(appToken)
-  // const machine = createMachine()
-  const swingsetRunner = await createSwingsetRunner()
+  const machine = await createMachine()
 
   /**
    * CHAT MESSAGE HANDLING
@@ -66,7 +65,7 @@ async function main () {
     // }
 
     // machine.queue({ loggable, msg })
-    const stringResponse = await swingsetRunner.handleMessage(authorId, command)
+    const stringResponse = await machine.handleMessage(authorId, command)
     const { error, result } = deserializeResponse(stringResponse)
     // console.log(`${authorId}: "${command}": ${result}`)
     let stringReply = serializeReply({ error, result })
