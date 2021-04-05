@@ -25,10 +25,10 @@ const build = async (wallet) => {
   //   await moolaPurse.getCurrentAmount(),
 
   return harden({
-    handleCommand: (command) => {
+    handleCommand: async (command) => {
       let result, error
       try {
-        result = compartment.evaluate(command)
+        result = await compartment.evaluate(command)
       } catch (err) {
         error = {
           message: err.message

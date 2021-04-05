@@ -1,3 +1,6 @@
+import { E } from '@agoric/eventual-send'
+import { serialize } from './printLog'
+
 export function createKernel () {
   const authorMap = new Map()
   const shareBoxes = new Map()
@@ -25,7 +28,7 @@ export function createKernel () {
 
   // this function handles messages from xsnap, by its name
   /* eslint-disable-next-line no-unused-vars */
-  function handleCommand (request) {
+  async function handleCommand (request) {
     const { authorId, command } = request
 
     if (authorId === 'system' && command === 'systemState') {
@@ -37,17 +40,17 @@ export function createKernel () {
     }
 
     const author = getAuthor(authorId)
-    let result, error
     try {
-      result = author.compartment.evaluate(command)
+      const result = await author.compartment.evaluate(command)
+      return serializeOutput({ result })
     } catch (err) {
-      error = {
+      const error = {
         message: err.message
         // this causes is non determinism
         // stack: err.stack
       }
+      return serializeOutput({ error })
     }
-    return serializeOutput({ error, result })
   }
 
   function getAuthorsState () {
@@ -78,6 +81,8 @@ export function createKernel () {
     inboxes.set(id, inbox)
     /* eslint-disable-next-line no-undef */
     const compartment = new Compartment({
+      E,
+      console,
       id: id,
       my: {},
       share: shareBox,
@@ -209,7 +214,7 @@ export function createKernel () {
 
 function serializeOutput (value) {
   try {
-    return JSON.stringify(value, null, 2)
+    return serialize(value)
   } catch (err) {
     return '{ "error": "<failed to serialize result>" }'
   }

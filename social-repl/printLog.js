@@ -1,3 +1,4 @@
+/* global assert */
 
 function bigintReplacer (_, arg) {
   if (typeof arg === 'bigint') {
@@ -16,8 +17,6 @@ export function makePrintLog () {
 }
 
 export function serialize (...args) {
-  const rendered = args.map(arg =>
-    typeof arg === 'string' ? arg : JSON.stringify(arg, bigintReplacer, 2)
-  ).join(' ')
+  const rendered = args.map(arg => assert.quote(arg)).join(' ')
   return rendered
 }

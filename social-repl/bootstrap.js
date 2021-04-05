@@ -101,7 +101,7 @@ export function buildRootObject (vatPowers) {
           // if no error, handle the command
           if (!response) {
             try {
-              response = kernel.handleCommand({ authorId, command })
+              response = await kernel.handleCommand({ authorId, command })
             } catch (err) {
               log('bootstrap: handleCommand failed')
               response = { error: err }
@@ -164,8 +164,19 @@ async function createAuthor ({
     pursesStateChangeHandler,
     inboxStateChangeHandler
   })
+
+  const moolaPayment = moolaBundle.mint.mintPayment(
+    moolaBundle.amountMath.make(100n)
+  )
+
+  const { amountMath } = moolaBundle
+  await wallet.makeEmptyPurse('moola', 'coins')
+  await wallet.deposit('coins', moolaPayment)
+  const purse = wallet.getPurse('coins')
+  // );
+
   // const actor = await E(vat.root).build(wallet)
-  return { wallet }
+  return { amountMath, purse, wallet }
 }
 
 async function setupEconomy ({ zoe }) {
