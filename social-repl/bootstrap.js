@@ -16,8 +16,8 @@ export function buildRootObject (vatPowers) {
       const inboundHandler = harden({
         inbound (msgId, authorId, command) {
           log(`command: ${authorId} runs "${command}"`)
-          const { error, result } = kernel.handleCommand({ authorId, command })
-          D(devices.bridge).callOutbound(msgId, { error, result })
+          const response = kernel.handleCommand({ authorId, command })
+          D(devices.bridge).callOutbound(msgId, response)
         }
       })
       D(devices.bridge).registerInboundHandler(inboundHandler)

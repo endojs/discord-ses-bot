@@ -8,6 +8,7 @@ import {
   loadSwingsetConfigFile,
   loadBasedir,
   initializeSwingset,
+  swingsetIsInitialized,
   makeSwingsetController
 } from '@agoric/swingset-vat'
 import {
@@ -117,7 +118,7 @@ export async function createSwingsetRunner () {
   const initOnly = false
 
   // case '--init':
-  forceReset = true
+  // forceReset = true
 
   let basedir = 'social-repl'
   const bootstrapArgv = []
@@ -201,8 +202,9 @@ export async function createSwingsetRunner () {
       }
     }
   }
+
   let bootstrapResult
-  if (forceReset) {
+  if (forceReset || !swingsetIsInitialized(store.storage)) {
     bootstrapResult = await initializeSwingset(
       config,
       bootstrapArgv,
@@ -246,7 +248,7 @@ export async function createSwingsetRunner () {
   // skip the command switch
 
   // initialize
-  await runBatch(0, blockMode)
+  await runBatch(0, true)
 
   // return a swingsetRunner api
   let messageCount = 0
@@ -261,7 +263,7 @@ export async function createSwingsetRunner () {
       // deliver the message
       await devices.bridge.deliverInbound(messageId, ...args)
       // run the message
-      await runBatch(0, blockMode)
+      await runBatch(0, true)
       return deferred.promise
     }
   }
