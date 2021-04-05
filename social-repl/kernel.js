@@ -41,8 +41,9 @@ export function createKernel () {
       result = author.compartment.evaluate(command)
     } catch (err) {
       error = {
-        message: err.message,
-        stack: err.stack
+        message: err.message
+        // this causes is non determinism
+        // stack: err.stack
       }
     }
     return serializeOutput({ error, result })
