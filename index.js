@@ -80,41 +80,6 @@ async function main () {
 
     msg.reply(stringReply)
   })
-
-  await replayPastFromDisk(swingsetRunner)
-}
-
-async function replayPastFromDisk (swingsetRunner, filePath = defaultLogPath) {
-  await ensureLogfileExists()
-
-  const stream = fs.createReadStream(defaultLogPath)
-  for await (let chunk of stream) {
-    if (chunk) {
-      const stringChunk = chunk.toString('utf8')
-      const entries = stringChunk.split('\n')
-      for (let entry of entries) {
-        console.log(entry)
-        const { id, command } = JSON.parse(entry)
-        await swingsetRunner.handleMessage(id, command)
-      }
-    }
-  }
-
-  await pfs.rm(defaultLogPath);
-}
-
-async function ensureLogfileExists () {
-  let logFile
-  try {
-    logFile = await pfs.stat(defaultLogPath, 'utf8')
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      await pfs.writeFile(defaultLogPath, '{"id":"0","command":"0"}')
-    } else {
-      console.error(err)
-      throw err
-    }
-  }
 }
 
 function serializeReply ({ result, error }) {
