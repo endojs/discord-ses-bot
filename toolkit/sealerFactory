@@ -1,0 +1,15 @@
+function makeSealer () {
+    const unsealMap = new WeakMap();
+
+    function seal (original, label) {
+        const sealed = ({type: 'sealed', label});
+        unsealMap.set(sealed, original);
+        return sealed;
+    }
+
+    function unseal (sealed) {
+        return unsealMap.get(sealed);
+    }
+
+    return { seal, unseal };
+}
