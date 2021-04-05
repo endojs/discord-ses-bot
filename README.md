@@ -19,7 +19,7 @@ A member can have SES-bot print their ID by calling "/eval id".
   "publicKey": "YOUR_PUBLIC_KEY"
 }
 ```
-Then run `yarn` and `yarn start`.
+Then run `yarn`, `yarn build`, and `yarn start`.
 To resume after a crash, maybe use `nodemon index.js`.
 
 If the `yarn` step fails on an M1 mac, consider installing the `node-canvas` native deps from your own preferred way first. For example, if you use homebrew, you can run `brew install pkg-config cairo pango libpng jpeg giflib librsvg`, and then try again.
@@ -31,3 +31,8 @@ As long as you move your `config.json` and `social-repl/swingset-kernel-state/` 
 ## Some Notes on Swingset
 
 Most of our SwingSet is copied directly from Agoric's libraries. The `swingset` folder is for files that are copied ver batim. The `swingset-*.js` files in the root directory are customized.
+
+# learnings
+- i expected some features like forking/comming to be at the xsnap level
+- default swingset doesnt run in xsnap!
+- a simple swingset showing off device integration is helpful because computers are more interesting when connected to the outside world
