@@ -15,7 +15,13 @@ export async function createMachine () {
       bootstrap: {
         sourceSpec: path.resolve(__dirname, 'social-repl', 'bootstrap.js'),
         parameters: {}
-      }
+      },
+      "zoe": {
+        "sourceSpec": path.resolve(__dirname, 'social-repl', 'vat-zoe.js'),
+        "parameters": {
+          "zcfBundleName": "zcf"
+        }
+      },
     },
     devices: {
       ...deviceConfig

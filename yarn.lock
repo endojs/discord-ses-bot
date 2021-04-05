@@ -67,6 +67,21 @@
   dependencies:
     ses "^0.12.6"
 
+"@agoric/ertp@^0.10.2-dev.0":
+  version "0.10.2-dev.0"
+  resolved "https://registry.yarnpkg.com/@agoric/ertp/-/ertp-0.10.2-dev.0.tgz#e4b00796bbd5fc6605d0a0a6991ca14f3d048f9a"
+  integrity sha512-e3QWGlXfSX53LJJ8/lw6sWCajKbkHA3Kin7ZUFVFfxTFm6oeO2hQdDxVWPG41RQ1lmBFqFfhBRQSPmKnmaq/1g==
+  dependencies:
+    "@agoric/assert" "^0.2.5-dev.0"
+    "@agoric/eventual-send" "^0.13.5-dev.0"
+    "@agoric/import-manager" "^0.2.5-dev.0"
+    "@agoric/marshal" "^0.4.2-dev.0"
+    "@agoric/nat" "^4.0.0"
+    "@agoric/notifier" "^0.3.5-dev.0"
+    "@agoric/promise-kit" "^0.2.5-dev.0"
+    "@agoric/same-structure" "^0.1.5-dev.0"
+    "@agoric/store" "^0.4.5-dev.0"
+
 "@agoric/eventual-send@^0.13.5-dev.0":
   version "0.13.5-dev.0"
   resolved "https://registry.yarnpkg.com/@agoric/eventual-send/-/eventual-send-0.13.5-dev.0.tgz#89e22d1fd3c5acd809dea24b8ca2f1ad5e2d6b90"
@@ -80,6 +95,11 @@
     "@agoric/assert" "^0.2.5-dev.0"
     "@agoric/base64" "^0.1.5-dev.0"
     "@agoric/compartment-mapper" "^0.2.3"
+
+"@agoric/import-manager@^0.2.5-dev.0":
+  version "0.2.5-dev.0"
+  resolved "https://registry.yarnpkg.com/@agoric/import-manager/-/import-manager-0.2.5-dev.0.tgz#8124aca3f964a7f0c8492132fe6b973c3fc98542"
+  integrity sha512-l4tVt99Pj6lMyGwtIiQ4b1kqnZIput36ggr6dpD+r7J6BjZzxC6Th4yZZT+8hRBKZUta0zaKNnLvHXMWL3edVA==
 
 "@agoric/install-ses@^0.5.5-dev.0":
   version "0.5.5-dev.0"
@@ -125,6 +145,14 @@
   integrity sha512-RiqbBuF+wVZCslpoYAxejl8/Yw3tRQwXN8SjeSUQW+GeuE1EtkhPrF7WAZq4K7br+pTVeAL2QPSDXWc+LhpXJQ==
   dependencies:
     "@agoric/eventual-send" "^0.13.5-dev.0"
+
+"@agoric/same-structure@^0.1.5-dev.0":
+  version "0.1.5-dev.0"
+  resolved "https://registry.yarnpkg.com/@agoric/same-structure/-/same-structure-0.1.5-dev.0.tgz#a49eec0eceebf40e416aef8f2146f8ea4cc15347"
+  integrity sha512-XvV3QGzJRXog+qrdJvDk9r8Du84uoU/ImocLoEz5TKLezE4CXY8tucMyO5Vp9JtxtlKKZ3dyMz24Qc0kqDuXeA==
+  dependencies:
+    "@agoric/assert" "^0.2.5-dev.0"
+    "@agoric/marshal" "^0.4.2-dev.0"
 
 "@agoric/stat-logger@^0.4.5-dev.0":
   version "0.4.5-dev.0"
@@ -229,6 +257,25 @@
     esm "^3.2.5"
     glob "^7.1.6"
     ses "^0.12.5"
+
+"@agoric/zoe@^0.13.2-dev.0":
+  version "0.13.2-dev.0"
+  resolved "https://registry.yarnpkg.com/@agoric/zoe/-/zoe-0.13.2-dev.0.tgz#4585830078ef18f68bd458a4b23dec0964ec93c8"
+  integrity sha512-iAKqU6eYDu9/pIdx3/soGLDQhtm5/duBy3QsZN1B0vVqNcItZt8Wj2/du1eUeJzJfZryi59c58YMdMM5EjjiPA==
+  dependencies:
+    "@agoric/assert" "^0.2.5-dev.0"
+    "@agoric/bundle-source" "^1.2.5-dev.0"
+    "@agoric/ertp" "^0.10.2-dev.0"
+    "@agoric/eventual-send" "^0.13.5-dev.0"
+    "@agoric/import-bundle" "^0.2.5-dev.0"
+    "@agoric/marshal" "^0.4.2-dev.0"
+    "@agoric/nat" "^4.0.0"
+    "@agoric/notifier" "^0.3.5-dev.0"
+    "@agoric/promise-kit" "^0.2.5-dev.0"
+    "@agoric/same-structure" "^0.1.5-dev.0"
+    "@agoric/store" "^0.4.5-dev.0"
+    "@agoric/swingset-vat" "^0.14.1-dev.0"
+    "@agoric/transform-metering" "^1.4.5-dev.0"
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
