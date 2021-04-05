@@ -2,7 +2,7 @@
 import { E } from '@agoric/eventual-send'
 import { makeLocalAmountMath } from '@agoric/ertp'
 import { assert, details as X } from '@agoric/assert'
-import { makePrintLog } from './printLog'
+import { makePrintLog, serialize } from './printLog'
 // import { showPurseBalance, setupIssuers } from './helpers';
 
 const build = async (log, zoe, wrappedIssuers, wrappedPayments, installations, timer) => {
@@ -579,7 +579,7 @@ export function buildRootObject (_vatPowers) {
 
 function serializeOutput (value) {
   try {
-    return JSON.stringify(value, null, 2)
+    return serialize(value)
   } catch (err) {
     return '{ "error": "<failed to serialize result>" }'
   }

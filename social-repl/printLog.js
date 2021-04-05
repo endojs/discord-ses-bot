@@ -14,3 +14,10 @@ export function makePrintLog () {
     console.log(rendered.join(''))
   }
 }
+
+export function serialize (...args) {
+  const rendered = args.map(arg =>
+    typeof arg === 'string' ? arg : JSON.stringify(arg, bigintReplacer, 2)
+  ).join(' ')
+  return rendered
+}
