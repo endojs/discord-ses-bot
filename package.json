@@ -7,7 +7,7 @@
     "start": "node -r esm ./index.js",
     "dev": "node -r esm swingset-runner.js --init run social-repl",
     "loadFromLogs": "node -r esm load-from-logs.js",
-    "clearDb": "rm -rf social-repl/swingset-kernel-state.js",
+    "clearDb": "rm -rf social-repl/swingset-kernel-state",
     "keepRunning": "nodemon -r esm ./index.js",
     "test": "ava",
     "lint": "eslint './**/*.js'",

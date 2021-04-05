@@ -1,4 +1,5 @@
 /* global assert */
+import path from 'path'
 import { prepareDevices } from './swingset-devices'
 import { createSwingsetRunner } from './swingset-main'
 
@@ -6,11 +7,35 @@ export async function createMachine () {
   const { createMessage, handleMessageResponse } = createMessageManager()
 
   // create devices
-  const { devices } = prepareDevices({ doOutboundBridge: handleMessageResponse })
+  const { devices, deviceConfig, deviceEndowments } = prepareDevices({ doOutboundBridge: handleMessageResponse })
+
+  const config = {
+    bootstrap: 'bootstrap',
+    vats: {
+      bootstrap: {
+        sourceSpec: path.resolve(__dirname, 'social-repl', 'bootstrap.js'),
+        parameters: {}
+      }
+    },
+    devices: {
+      ...deviceConfig
+    },
+    bundles: {
+      room: {
+        sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-room.js')
+      }
+    }
+  }
 
   const swingetRunner = await createSwingsetRunner({
     basedir: 'social-repl',
-    devices
+    config,
+    endowments: deviceEndowments
+    // devices,
+    // below are options triggered by --meter flag
+    // meterVats: true,
+    // globalMeteringActive: true,
+    // launchIndirectly: true
   })
 
   // return a swingsetRunner api

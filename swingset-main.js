@@ -102,7 +102,7 @@ function generateIndirectConfig (baseConfig) {
     bundles: {},
     vats: {
       launcher: {
-        sourceSpec: path.resolve(__dirname, 'vat-launcher.js'),
+        sourceSpec: path.resolve(__dirname, 'swingset/vat-launcher.js'),
         parameters: {
           config: {
             bootstrap: baseConfig.bootstrap,
@@ -180,7 +180,8 @@ export async function createSwingsetRunner ({
   basedir,
   bootstrapArgv = [],
   endowments = {},
-  devices = {}
+  devices = {},
+  config
 } = {}) {
   // while (argv[0] && argv[0].startsWith('-')) {
   //   const flag = argv.shift();
@@ -319,19 +320,27 @@ export async function createSwingsetRunner ({
   // let basedir = (argv[0] === '--' || argv[0] === undefined) ? '.' : argv.shift();
   // const bootstrapArgv = argv[0] === '--' ? argv.slice(1) : argv;
 
-  let config
-  if (configPath) {
-    config = loadSwingsetConfigFile(configPath)
-    if (config === null) {
-      fail(`config file ${configPath} not found`)
+  if (!config) {
+    if (configPath) {
+      config = loadSwingsetConfigFile(configPath)
+      if (config === null) {
+        fail(`config file ${configPath} not found`)
+      }
+      basedir = path.dirname(configPath)
+    } else {
+      config = loadBasedir(basedir)
     }
-    basedir = path.dirname(configPath)
-  } else {
-    config = loadBasedir(basedir)
+  // console.log(JSON.stringify(config, null, 2))
+  }
+
+  if (launchIndirectly) {
+    config = generateIndirectConfig(config)
+    // console.log(JSON.stringify(config, null, 2))
   }
 
   // kumavis: add device setup
   // apply devices config and endowments
+  // must run after generateIndirectConfig, bc it will override config.devices
   for (const [name, device] of Object.entries(devices)) {
     config.devices = {
       [name]: {
@@ -347,9 +356,20 @@ export async function createSwingsetRunner ({
     }
   }
 
-  if (launchIndirectly) {
-    config = generateIndirectConfig(config)
-  }
+  // kumavis: include bundle sources?
+  // let bundleSourceSpecContainer
+  // if (launchIndirectly) {
+  //   bundleSourceSpecContainer = config.vats.launcher.parameters.config.vats
+  // } else {
+  //   bundleSourceSpecContainer = config.vats
+  // }
+  // config.bundles = {
+  //   room: { ...bundleSourceSpecContainer.room },
+  //   ...(config.bundles || {})
+  // }
+
+  console.log(JSON.stringify(config, null, 2))
+
   if (!dbDir) {
     dbDir = basedir
   }
@@ -528,6 +548,9 @@ export async function createSwingsetRunner ({
   if (statLogger) {
     statLogger.close()
   }
+
+  // kumavis: trigger bootstrap call
+  await runBatch(0, true)
 
   // kumavis: i added exports
   return {

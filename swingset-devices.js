@@ -8,34 +8,18 @@ export function prepareDevices ({ doOutboundBridge }) {
     return doOutboundBridge(dstID, obj)
   }
   const bridgeDevice = buildBridge(bridgeOutbound)
-  // const deviceConfig = {
-  //   bridge: {
-  //     sourceSpec: bridgeDevice.srcPath
-  //   }
-  // }
-  // const deviceEndowments = {
-  //   bridge: {
-  //     ...bridgeDevice.endowments
-  //   }
-  // }
-  // config.devices = {
-  //   bridge: {
-  //     sourceSpec: bd.srcPath,
-  //   },
-  //   mailbox: {
-  //     sourceSpec: mb.srcPath,
-  //   },
-  //   timer: {
-  //     sourceSpec: timer.srcPath,
-  //   },
-  // };
-  // const deviceEndowments = {
-  //   bridge: { ...bd.endowments },
-  //   mailbox: { ...mb.endowments },
-  //   timer: { ...timer.endowments },
-  // };
+  const deviceConfig = {
+    bridge: {
+      sourceSpec: bridgeDevice.srcPath
+    }
+  }
+  const deviceEndowments = {
+    bridge: {
+      ...bridgeDevice.endowments
+    }
+  }
   const devices = {
     bridge: bridgeDevice
   }
-  return { devices }
+  return { devices, deviceConfig, deviceEndowments }
 }
