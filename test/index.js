@@ -1,15 +1,15 @@
-import test from 'ava';
-import { createMachine } from '../machine';
+import test from 'ava'
+import { createMachine } from '../machine'
 
 test('share', async (t) => {
   const { replayPast, runner: { getSystemState } } = createMachine()
   const msgResults = await replayPast([
-    `1: my.likes = 0`,
-    `1: my.like = () => my.likes++`,
-    `1: my.like()`,
-    `1: my.likes`,
-    `1: share.like = my.like`,
-    `2: others['1'].like()`,
+    '1: my.likes = 0',
+    '1: my.like = () => my.likes++',
+    '1: my.like()',
+    '1: my.likes',
+    '1: share.like = my.like',
+    '2: others[\'1\'].like()'
   ])
   ensureNoErrors(t, msgResults)
   const { authorsState } = await getSystemState()
@@ -19,10 +19,10 @@ test('share', async (t) => {
 })
 
 test('share number', async (t) => {
-  const { replayPast, getSystemState } = createMachine()
+  const { replayPast } = createMachine()
   const msgResults = await replayPast([
-    `1: id`,
-    `2: others['1'].xyz = true`,
+    '1: id',
+    '2: others[\'1\'].xyz = true'
   ])
   t.falsy(msgResults[0].error)
   t.truthy(msgResults[1].error)
@@ -31,12 +31,12 @@ test('share number', async (t) => {
 test('send', async (t) => {
   const { replayPast, getSystemState } = createMachine()
   const msgResults = await replayPast([
-    `1: my.likes = 0`,
-    `1: my.like = () => my.likes++`,
-    `1: my.like()`,
-    `2: id`,
-    `1: send('2', 'like', my.like)`,
-    `2: inbox['1'].like()`,
+    '1: my.likes = 0',
+    '1: my.like = () => my.likes++',
+    '1: my.like()',
+    '2: id',
+    '1: send(\'2\', \'like\', my.like)',
+    '2: inbox[\'1\'].like()'
   ])
   ensureNoErrors(t, msgResults)
   const { authorsState } = await getSystemState()
@@ -47,9 +47,9 @@ test('send', async (t) => {
 
 test('oog rollback', async (t) => {
   const { replayPast, getSystemState } = createMachine()
-  const msgResults = await replayPast([
-    `1: my.likes = 100`,
-    `2: for (;;) {    }`,
+  await replayPast([
+    '1: my.likes = 100',
+    '2: for (;;) {    }'
   ])
   const { authorsState } = await getSystemState()
   const author = authorsState['1']

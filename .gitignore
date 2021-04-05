@@ -2,3 +2,5 @@ config.json
 node_modules/
 log.txt
 .DS_Store
+
+*/swingset-kernel-state
