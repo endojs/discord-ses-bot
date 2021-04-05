@@ -1,8 +1,9 @@
 /* global require __dirname */
-import '@agoric/install-ses';
-import bundleSource from '@agoric/bundle-source';
+import path from 'path'
+import '@agoric/install-ses'
+import bundleSource from '@agoric/bundle-source'
 
-import fs from 'fs';
+import fs from 'fs'
 
 const CONTRACT_FILES = [
   'automaticRefund',
@@ -10,33 +11,32 @@ const CONTRACT_FILES = [
   'coveredCall',
   {
     contractPath: 'auction/secondPriceAuction',
-    bundleName: 'secondPriceAuction',
+    bundleName: 'secondPriceAuction'
   },
   'atomicSwap',
   'simpleExchange',
   'sellItems',
   'mintAndSellNFT',
-  'otcDesk',
-];
+  'otcDesk'
+]
 
 const generateBundlesP = Promise.all(
   CONTRACT_FILES.map(async settings => {
-    let bundleName;
-    let contractPath;
+    let bundleName
+    let contractPath
     if (typeof settings === 'string') {
-      bundleName = settings;
-      contractPath = settings;
+      bundleName = settings
+      contractPath = settings
     } else {
-      ({ bundleName, contractPath } = settings);
+      ({ bundleName, contractPath } = settings)
     }
-    const source = require.resolve(`@agoric/zoe/src/contracts/${contractPath}`);
-    const bundle = await bundleSource(source);
-    const obj = { bundle, bundleName };
-    fs.writeFileSync(
-      `${__dirname}/bundle-${bundleName}.js`,
-      `export default ${JSON.stringify(obj)};`,
-    );
-  }),
-);
+    const source = require.resolve(`@agoric/zoe/src/contracts/${contractPath}`)
+    const bundle = await bundleSource(source)
+    const obj = { bundle, bundleName }
+    fs.writeFileSync(path.join(__dirname, `bundle-${bundleName}.js`),
+      `export default ${JSON.stringify(obj)};`
+    )
+  })
+)
 
-generateBundlesP.then(() => console.log('contracts prepared'));
+generateBundlesP.then(() => console.log('contracts prepared'))

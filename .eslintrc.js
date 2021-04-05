@@ -12,5 +12,5 @@ module.exports = {
   },
   rules: {
   },
-  ignorePatterns: ['swingset/**']
+  ignorePatterns: ['swingset/**', 'social-repl/bundle-*.js']
 }
