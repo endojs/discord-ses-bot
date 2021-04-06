@@ -20,7 +20,7 @@ export function createKernel () {
     You can find the objects others have shared in your "others" object, by their ID.
     You can send an object to a specific user by calling "send(otherId, label, object)".
     They can access objects sent from you at their "inbox[yourId][yourLabel]".
-    A member can have SES-bot print their ID by calling "/eval id".
+    A member can have SES-bot print their ID by calling "$id".
     You can safely try out a command without committing to it with the "?" prefix.
     You can read my source code here: https://github.com/danfinlay/discord-ses-bot
     `
