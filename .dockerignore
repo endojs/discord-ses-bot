@@ -1,2 +1,5 @@
+# we ignore this so we dont copy the one from the host (outside docker) and then block the volume mapping
+log.txt
+
 node_modules
 *.log
