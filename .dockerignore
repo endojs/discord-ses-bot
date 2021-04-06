@@ -1,5 +1,7 @@
 # we ignore this so we dont copy the one from the host (outside docker) and then block the volume mapping
 log.txt
+# we ignore this so we dont copy the one from the host (outside docker)
+social-repl/swingset-kernel-state
 
 node_modules
 *.log
