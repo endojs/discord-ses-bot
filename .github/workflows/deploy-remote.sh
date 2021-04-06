@@ -5,7 +5,3 @@ cd /root/project/discord-ses-bot
 
 git fetch origin && git switch $GITHUB_REF
 docker-compose build && docker-compose stop && docker-compose up -d
-# yarn setup
-# yarn clearDb
-# yarn loadFromLogs
-# yarn start
