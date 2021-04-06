@@ -1,8 +1,10 @@
 FROM node:14
 
-COPY {package*.json,yarn.lock} ./
+# cache deps
+COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
+# setup project
 COPY . .
 RUN yarn prod
 
