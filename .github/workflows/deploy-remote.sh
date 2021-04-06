@@ -5,5 +5,5 @@ cd /root/project/discord-ses-bot
 
 echo "switching to $GITHUB_SHA"
 
-git fetch origin && git switch $GITHUB_SHA
+git fetch origin && git checkout $GITHUB_SHA
 docker-compose build && docker-compose stop && docker-compose up -d
