@@ -55,7 +55,7 @@ export async function createMachine () {
 
   async function handleMessage (...args) {
     if (aborting) {
-      return { error: new Error('restarting, please wait...') }
+      throw new Error('restarting, please wait...')
     }
     try {
       const stringResponse = await runMessage(...args)
@@ -65,10 +65,9 @@ export async function createMachine () {
       return response
     } catch (err) {
       aborting = true
-      console.error(err)
       // allow time to respond, then exit (and restart)
       setTimeout(() => process.exit(1), 200)
-      return { error: err }
+      throw err
     }
   }
 

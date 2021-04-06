@@ -1,4 +1,5 @@
 import { inspect } from 'util'
+import { promise as fs } from 'fs'
 
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
@@ -73,8 +74,12 @@ async function main () {
     try {
       response = await machine.handleMessage(authorId, command)
     } catch (err) {
-      response = { error: err }
+      // encoutered fatal error (not a normal error with the evaled code)
+      msg.reply(`Fatal Error: ${err.message}`)
+      return
     }
+    // message did not explode, commit to log
+    await fs.appendFile('log.txt', `${JSON.stringify({ id: authorId, command })}\n`, 'utf8')
     const { error, result } = response
     let stringReply = serializeReply({ error, result })
     if (stringReply.length > REPLY_LIMIT) {
