@@ -1,5 +1,5 @@
 import { inspect } from 'util'
-import { promise as fs } from 'fs'
+import { promises as fs } from 'fs'
 
 // LMDB bindings need to be imported before lockdown.
 import 'node-lmdb'
