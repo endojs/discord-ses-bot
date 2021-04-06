@@ -7,4 +7,4 @@ git pull origin main
 yarn setup
 yarn clearDb
 yarn loadFromLogs
-yarn start
+yarn start &
