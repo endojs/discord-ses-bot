@@ -1,8 +1,10 @@
 # docker stop
 echo "updating server"
 cd /root/project/discord-ses-bot
+. ~/.nvm/nvm.sh
+
 git pull origin main
-/root/.nvm/versions/node/v14.16.0/bin/yarn setup
-/root/.nvm/versions/node/v14.16.0/bin/yarn clearDb
-/root/.nvm/versions/node/v14.16.0/bin/yarn loadFromLogs
-/root/.nvm/versions/node/v14.16.0/bin/yarn start
+yarn setup
+yarn clearDb
+yarn loadFromLogs
+yarn start
