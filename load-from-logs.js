@@ -1,19 +1,19 @@
 import { promises as pfs } from 'fs'
 import path from 'path'
 import './install-ses'
-import { createSwingsetRunner } from './swingset-main.js'
+import { createMachine } from './machine.js'
 const defaultLogPath = path.join(__dirname, 'log.txt')
 
 replayPastFromDisk()
 
 export async function replayPastFromDisk (filePath = defaultLogPath) {
-  const swingsetRunner = await createSwingsetRunner()
+  const machine = await createMachine()
   await ensureLogfileExists()
   const file = await pfs.readFile(defaultLogPath, 'utf-8')
   const lines = file.split('\n')
   for await (const entry of lines) {
     const { id, command } = JSON.parse(entry)
-    await swingsetRunner.handleMessage(id, command)
+    await machine.handleMessage(id, command)
   }
 }
 

@@ -15,14 +15,23 @@ export async function createMachine () {
       bootstrap: {
         sourceSpec: path.resolve(__dirname, 'social-repl', 'bootstrap.js'),
         parameters: {}
+      },
+      zoe: {
+        sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-zoe.js'),
+        parameters: {
+          zcfBundleName: 'zcf'
+        }
       }
     },
     devices: {
       ...deviceConfig
     },
     bundles: {
-      room: {
-        sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-room.js')
+      author: {
+        sourceSpec: path.resolve(__dirname, 'social-repl', 'vat-author.js')
+      },
+      zcf: {
+        sourceSpec: require.resolve('@agoric/zoe/contractFacet')
       }
     }
   }
@@ -134,6 +143,7 @@ function defer () {
 
 function deserializeResponse (stringResponse) {
   try {
+    console.log(stringResponse)
     return JSON.parse(stringResponse)
   } catch (err) {
     return { error: err }

@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -x 'node -r esm index.js || touch index.js'",
+    "start": "yarn build && nodemon -x 'node -r esm index.js || touch index.js'",
+    "dev": "yarn build && nodemon -x 'yarn clearDb && node -r esm index.js || touch index.js'",
+    "build": "node -r esm social-repl/prepareContracts.js",
     "loadFromLogs": "node -r esm load-from-logs.js",
     "clearDb": "rm -rf social-repl/swingset-kernel-state",
     "test": "ava",
@@ -24,10 +26,16 @@
   "license": "ISC",
   "repository": "https://github.com/danfinlay/discord-ses-bot.git",
   "dependencies": {
+    "@agoric/bundle-source": "^1.2.5-dev.0",
+    "@agoric/cosmic-swingset": "^0.28.0-dev.0",
+    "@agoric/dapp-svelte-wallet": "^0.8.0-dev.0",
+    "@agoric/ertp": "^0.10.2-dev.0",
+    "@agoric/registrar": "^0.2.5-dev.0",
     "@agoric/stat-logger": "^0.4.5-dev.0",
     "@agoric/swing-store-lmdb": "^0.4.5-dev.0",
     "@agoric/swing-store-simple": "^0.3.5-dev.0",
     "@agoric/swingset-vat": "^0.14.1-dev.0",
+    "@agoric/zoe": "^0.13.2-dev.0",
     "discord.js": "^12.5.2",
     "node-lmdb": "^0.9.4",
     "ses": "^0.12.6"

@@ -1,10 +1,14 @@
+import { E } from '@agoric/eventual-send'
+import { serialize } from './printLog'
+
 export function createKernel () {
   const authorMap = new Map()
   const shareBoxes = new Map()
   const inboxes = new Map()
 
   return {
-    handleCommand
+    handleCommand,
+    createAuthor
   }
 
   function help () {
@@ -16,7 +20,7 @@ export function createKernel () {
     You can find the objects others have shared in your "others" object, by their ID.
     You can send an object to a specific user by calling "send(otherId, label, object)".
     They can access objects sent from you at their "inbox[yourId][yourLabel]".
-    A member can have SES-bot print their ID by calling "/eval id".
+    A member can have SES-bot print their ID by calling "$id".
     You can safely try out a command without committing to it with the "?" prefix.
     You can read my source code here: https://github.com/danfinlay/discord-ses-bot
     `
@@ -24,7 +28,7 @@ export function createKernel () {
 
   // this function handles messages from xsnap, by its name
   /* eslint-disable-next-line no-unused-vars */
-  function handleCommand (request) {
+  async function handleCommand (request) {
     const { authorId, command } = request
 
     if (authorId === 'system' && command === 'systemState') {
@@ -36,17 +40,17 @@ export function createKernel () {
     }
 
     const author = getAuthor(authorId)
-    let result, error
     try {
-      result = author.compartment.evaluate(command)
+      const result = await author.compartment.evaluate(command)
+      return serializeOutput({ result })
     } catch (err) {
-      error = {
+      const error = {
         message: err.message
         // this causes is non determinism
         // stack: err.stack
       }
+      return serializeOutput({ error })
     }
-    return serializeOutput({ error, result })
   }
 
   function getAuthorsState () {
@@ -60,13 +64,13 @@ export function createKernel () {
   function getAuthor (id) {
     let author = authorMap.get(id)
     if (!author) {
-      author = createUser(id)
-      authorMap.set(id, author)
+      author = createAuthor(id)
     }
     return author
   }
 
-  function createUser (id) {
+  function createAuthor (id, extraEndowments = {}) {
+    if (authorMap.has(id)) return
     // for sharing publicly, multicast
     // set via "share"
     const shareBox = {}
@@ -77,6 +81,8 @@ export function createKernel () {
     inboxes.set(id, inbox)
     /* eslint-disable-next-line no-undef */
     const compartment = new Compartment({
+      E,
+      console,
       id: id,
       my: {},
       share: shareBox,
@@ -87,11 +93,15 @@ export function createKernel () {
         sendValueBetweenAuthors(id, to, label, value)
       },
       // expose the shareBoxes map as an object that returns read only interfaces
-      others: createReadOnlyMapProxy(shareBoxes, (otherShareBox) => createReadOnlyProxy(otherShareBox))
+      others: createReadOnlyMapProxy(shareBoxes, (otherShareBox) => createReadOnlyProxy(otherShareBox)),
+      ...extraEndowments
     })
-    return {
+    const author = {
+      id,
       compartment
     }
+    authorMap.set(id, author)
+    return author
   }
 
   function sendValueBetweenAuthors (from, to, label, value) {
@@ -204,7 +214,7 @@ export function createKernel () {
 
 function serializeOutput (value) {
   try {
-    return JSON.stringify(value, null, 2)
+    return serialize(value)
   } catch (err) {
     return '{ "error": "<failed to serialize result>" }'
   }
