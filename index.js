@@ -53,21 +53,14 @@ async function main () {
       return
     }
 
+    // // check if its a no-commit query command
+    // let isQuery = false
+    // if (simulatePrefix === message[0]) {
+    //   isQuery = true
+    // }
+
     // This is a command for us!
     const command = message.substr(messagePrefix.length) // Cut off the prefix
-    // const loggable = { id: authorId, command }
-
-    // // For simulated calls, invoke a new machine to try it.
-    // if (simulatePrefix === message[0]) {
-    //   const commands = await machine.getLogFromDisk()
-    //   const counterfactual = createMachine({
-    //     // We don't need to remember this state
-    //     logging: false
-    //   })
-    //   await counterfactual.replayPast(commands)
-    //   counterfactual.queue({ loggable, msg })
-    //   return
-    // }
 
     // machine.queue({ loggable, msg })
     let response
