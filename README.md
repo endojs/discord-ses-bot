@@ -2,11 +2,11 @@
 
 Welcome to SES-bot!
   
-You can run JavaScript commands with the "/eval" prefix, and they are run in your own personal SES container!
+You can run JavaScript commands with the "$" prefix, and they are run in your own personal SES container!
 You can't assign variables in these commands, but you have a "my" object you can hang variables on.
 You can also add objects to your "share" object, to make them available to everyone.
 You can find the objects others have shared in your "others" object, by their ID.
-A member can have SES-bot print their ID by calling "/eval id".
+A member can have SES-bot print their ID by calling "$id".
 
 ## Running your own
 
