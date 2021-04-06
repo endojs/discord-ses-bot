@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install Node.js
+    - name: Deploy via ssh
       run: '.github/workflows/deploy.sh'
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
