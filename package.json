@@ -12,7 +12,8 @@
     "clearDb": "rm -rf social-repl/swingset-kernel-state",
     "test": "ava",
     "lint": "eslint './**/*.js'",
-    "lint:fix": "eslint './**/*.js' --fix"
+    "lint:fix": "eslint './**/*.js' --fix",
+    "prod": "yarn setup && yarn clearDb && yarn loadFromLogs"
   },
   "ava": {
     "files": [
