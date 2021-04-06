@@ -78,6 +78,13 @@ export function createKernel () {
     // for sharing privately, unicast
     // receives from "send"
     const inbox = {}
+
+    const send = (to, label, value) => {
+      sendValueBetweenAuthors(id, to, label, value)
+    }
+    send.toString = () => `@typedef
+    (recipientId: string, messageKey: string, message: any) => null`
+
     inboxes.set(id, inbox)
     /* eslint-disable-next-line no-undef */
     const compartment = new Compartment({
@@ -89,9 +96,7 @@ export function createKernel () {
       inbox,
       // print: console.log,
       help,
-      send: (to, label, value) => {
-        sendValueBetweenAuthors(id, to, label, value)
-      },
+      send,
       // expose the shareBoxes map as an object that returns read only interfaces
       others: createReadOnlyMapProxy(shareBoxes, (otherShareBox) => createReadOnlyProxy(otherShareBox)),
       ...extraEndowments
