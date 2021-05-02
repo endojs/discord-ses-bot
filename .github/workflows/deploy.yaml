@@ -17,6 +17,11 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@main
 
+    - name: Prepare discord config file
+      env:
+        DISCORD_CONFIG: ${{ secrets.DISCORD_CONFIG }}
+      run: printf "$DISCORD_CONFIG" > $GITHUB_WORKSPACE/config.json
+
     - name: Build container image
       run: docker build -t registry.digitalocean.com/metamask/discord-ses-bot:$(echo $GITHUB_SHA | head -c7) .
 
