@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "yarn build && nodemon -x 'node -r esm index.js || touch index.js'",
-    "dev": "yarn build && nodemon -x 'yarn clearDb && node -r esm index.js || touch index.js'",
-    "build": "node -r esm social-repl/prepareContracts.js",
+    "setup": "yarn install && yarn setup:build",
+    "setup:build": "node -r esm social-repl/prepareContracts.js",
+    "start": "nodemon -x 'node -r esm index.js || touch index.js'",
+    "dev": "nodemon -x 'yarn clearDb && node -r esm index.js || touch index.js'",
     "loadFromLogs": "node -r esm load-from-logs.js",
     "clearDb": "rm -rf social-repl/swingset-kernel-state",
     "test": "ava",
     "lint": "eslint './**/*.js'",
-    "lint:fix": "eslint './**/*.js' --fix"
+    "lint:fix": "eslint './**/*.js' --fix",
+    "prod": "yarn clearDb && yarn loadFromLogs && yarn start"
   },
   "ava": {
     "files": [
