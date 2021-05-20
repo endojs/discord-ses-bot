@@ -91,4 +91,5 @@ function serializeReply ({ result, error }) {
   } else {
     return inspect(result, opts)
   }
+
 }
