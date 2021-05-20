@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: discord-ses-bot
+spec:
+  ports:
+  - port: 80
+    targetPort: 9000
+  selector:
+    app: discord-ses-bot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-ses-bot
+spec:
+  selector:
+    matchLabels:
+      app: discord-ses-bot
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: discord-ses-bot
+    spec:
+      containers:
+      - name: discord-ses-bot
+        image: <IMAGE>
+        imagePullSecrets:
+        - name: registry-metamask
