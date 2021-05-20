@@ -9,6 +9,6 @@ RUN yarn install --frozen-lockfile
 
 # setup project
 COPY . /app/
-RUN yarn setup:build
+RUN yarn build
 
 CMD [ "yarn", "prod" ]

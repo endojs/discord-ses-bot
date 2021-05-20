@@ -9,7 +9,6 @@
     "test": "ava",
     "lint": "eslint './*.js'",
     "lint:fix": "eslint './*.js' --fix",
-    "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/",
     "build": "cp -R xsnap-build/* node_modules/@agoric/xsnap/build/"
   },
   "ava": {
