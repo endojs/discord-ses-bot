@@ -4,6 +4,11 @@ import path from 'path'
 import { xsnap } from '@agoric/xsnap'
 import { spawn } from 'child_process'
 
+const compartmentOpts = {
+  // Gives each user a global lexical space;
+  sloppyGlobalsMode: true,
+}
+
 export function createRunner () {
   let isInitialized = false
   let worker
@@ -20,7 +25,7 @@ export function createRunner () {
       spawn
     })
     const kernelSrc = await fs.readFile(path.join(__dirname, 'kernel.js'), 'utf8')
-    await worker.evaluate(kernelSrc)
+    await worker.evaluate(kernelSrc, compartmentOpts)
     // await worker.evaluate(`handleCommand = (function(){\n${kernelSrc}\n})()`);
     isInitialized = true
   }
