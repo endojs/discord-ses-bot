@@ -2669,6 +2669,11 @@ ses@^0.12.3, ses@^0.12.6:
     "@agoric/make-hardener" "^0.1.2"
     "@agoric/transform-module" "^0.4.1"
 
+ses@^0.13.4:
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.13.4.tgz#d547202ccb180c4a161e52007a9edff51d5fa9fd"
+  integrity sha512-7pgHZF4i6tuMAhD6GeNgA8fxfgzeQ5queyRFnKfKPM6nvCEKd8JP3ityQ04rVspTzkzu9R0b2I4nb05ukblQDA==
+
 setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz"

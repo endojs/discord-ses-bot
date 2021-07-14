@@ -26,3 +26,10 @@ To resume after a crash, maybe use `nodemon index.js`.
 
 As long as you move your `config.json` and `log.txt` file to the root of this repository, you can resume your machine state on another machine, in another folder, or whatever.
 
+## Mac M1 Extra
+
+Currently `xsnap` does not ship with a mac `M1` build of the XS Engine, but this module includes one, which will copy it to the appropriate place with one command:
+
+```
+cp -r xsnap-build ./node_modules/@agoric/xsnap/build
+```

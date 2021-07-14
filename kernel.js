@@ -1,3 +1,8 @@
+const compartmentOpts = {
+  // Gives each user a global lexical space;
+  sloppyGlobalsMode: true,
+}
+
 // this code runs inside xsnap
 
 function help () {
@@ -36,7 +41,7 @@ function handleCommand (request) {
   const author = getAuthor(authorId)
   let result, error
   try {
-    result = author.compartment.evaluate(command)
+    result = author.compartment.evaluate(command, compartmentOpts)
   } catch (err) {
     error = {
       message: err.message,
