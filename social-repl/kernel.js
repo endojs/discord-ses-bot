@@ -1,3 +1,8 @@
+const compartmentOptions = {
+  // We use sloppy globals so each user gets a global lexical contour.
+  sloppyGlobalsMode: true,
+};
+
 export function createKernel () {
   const authorMap = new Map()
   const shareBoxes = new Map()
@@ -38,7 +43,7 @@ export function createKernel () {
     const author = getAuthor(authorId)
     let result, error
     try {
-      result = author.compartment.evaluate(command)
+      result = author.compartment.evaluate(command, compartmentOptions)
     } catch (err) {
       error = {
         message: err.message
