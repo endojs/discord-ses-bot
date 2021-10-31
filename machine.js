@@ -2,7 +2,10 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { nextTick } from 'process'
 import { inspect } from 'util'
-import { createRunner } from './runner'
+import { createRunner } from './runner.js'
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const REPLY_LIMIT = 2000
 const defaultLogPath = path.join(__dirname, 'log.txt')

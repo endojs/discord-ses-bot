@@ -3,6 +3,9 @@ import os from 'os'
 import path from 'path'
 import { xsnap } from '@agoric/xsnap'
 import { spawn } from 'child_process'
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export function createRunner () {
   let isInitialized = false

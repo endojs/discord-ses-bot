@@ -1,8 +1,12 @@
-const { appKey, appToken } = require('./config.json')
-const {
+import {
   createMachine
-} = require('./machine')
-const { Client: DiscordClient } = require('discord.js')
+} from './machine.js'
+import { Client as DiscordClient } from 'discord.js'
+
+// workaround for importing json
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const { appKey, appToken } = require('./config.json')
 
 // This int isn't sensitive, it just describes the permissions we're requesting:
 const PERMISSIONS_INT = 2147503168

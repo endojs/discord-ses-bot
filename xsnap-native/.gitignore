@@ -1,0 +1,10 @@
+build/
+
+# direnv config
+.envrc
+
+# emacs backups
+*~
+
+# misc temp files
+,*
