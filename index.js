@@ -27,7 +27,7 @@ async function main () {
     handleMessage({
       authorId: discordMsg.author.id,
       content: discordMsg.content,
-      reply: discordMsg.reply,
+      reply: (text) => discordMsg.reply(text),
     })
   })
 
