@@ -64,7 +64,8 @@ export function createMachine ({
     } catch (err) {
       if (err.code === 'ENOENT') {
         console.log('No logfile found, starting new one.')
-        await fs.writeFile(logPath, '{"id":"0","command":"0"}')
+        logFile = '{"id":"0","command":"0"}'
+        await fs.writeFile(logPath, logFile)
       } else {
         console.error(err)
         throw err
