@@ -1,1 +1,0 @@
-var helloworld = "Hello, world - xsnap";
