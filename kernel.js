@@ -48,7 +48,12 @@ function handleCommand (request) {
 
 function serializeOutput (value) {
   try {
-    return ArrayBuffer.fromString(JSON.stringify(value, null, 2))
+    let { error, result } = value
+    const response = {
+      error: error && bestEffortStringify(error),
+      result: result && bestEffortStringify(result),
+    }
+    return ArrayBuffer.fromString(JSON.stringify(response, null, 2))
   } catch (err) {
     return ArrayBuffer.fromString('{ "error": "<failed to serialize result>" }')
   }
@@ -205,3 +210,79 @@ function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Ref
 function mapToObj (map) {
   return Object.fromEntries(map.entries())
 }
+
+// from https://github.com/endojs/endo/blob/master/packages/ses/src/error/stringify-utils.js
+function bestEffortStringify (payload, spaces = undefined) {
+  const seenSet = new Set();
+  const replacer = (_, val) => {
+    switch (typeof val) {
+      case 'object': {
+        if (val === null) {
+          return null;
+        }
+        if (seenSet.has(val)) {
+          return '[Seen]';
+        }
+        seenSet.add(val);
+        if (val instanceof Error) {
+          return `[${val.name}: ${val.message}]`;
+        }
+        if (Symbol.toStringTag in val) {
+          // For the built-ins that have or inherit a `Symbol.toStringTag`-named
+          // property, most of them inherit the default `toString` method,
+          // which will print in a similar manner: `"[object Foo]"` vs
+          // `"[Foo]"`. The exceptions are
+          //    * `Symbol.prototype`, `BigInt.prototype`, `String.prototype`
+          //      which don't matter to us since we handle primitives
+          //      separately and we don't care about primitive wrapper objects.
+          //    * TODO
+          //      `Date.prototype`, `TypedArray.prototype`.
+          //      Hmmm, we probably should make special cases for these. We're
+          //      not using these yet, so it's not urgent. But others will run
+          //      into these.
+          //
+          // Once #2018 is closed, the only objects in our code that have or
+          // inherit a `Symbol.toStringTag`-named property are remotables
+          // or their remote presences.
+          // This printing will do a good job for these without
+          // violating abstraction layering. This behavior makes sense
+          // purely in terms of JavaScript concepts. That's some of the
+          // motivation for choosing that representation of remotables
+          // and their remote presences in the first place.
+          return `[${val[Symbol.toStringTag]}]`;
+        }
+        return val;
+      }
+      case 'function': {
+        return `[Function ${val.name || '<anon>'}]`;
+      }
+      case 'string': {
+        if (val.startsWith('[')) {
+          return `[${val}]`;
+        }
+        return val;
+      }
+      case 'undefined':
+      case 'symbol': {
+        return `[${String(val)}]`;
+      }
+      case 'bigint': {
+        return `[${val}n]`;
+      }
+      case 'number': {
+        if (Object.is(val, NaN)) {
+          return '[NaN]';
+        } else if (val === Infinity) {
+          return '[Infinity]';
+        } else if (val === -Infinity) {
+          return '[-Infinity]';
+        }
+        return val;
+      }
+      default: {
+        return val;
+      }
+    }
+  };
+  return JSON.stringify(payload, replacer, spaces);
+};
