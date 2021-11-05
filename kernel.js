@@ -7,9 +7,10 @@ function help () {
   You can't assign variables in these commands, but you have a "my" object you can hang variables on.
   You can also add objects to your "share" object, to make them available to everyone.
   You can find the objects others have shared in your "others" object, by their ID.
+  You can register others in your address book with "book[name] = theirId"
   You can send an object to a specific user by calling "send(otherId, label, object)".
-  They can access objects sent from you at their "inbox[yourId][yourLabel]".
-  A member can have SES-bot print their ID by calling "/eval id".
+  They can access objects sent from you at their "inbox[yourId][sendLabel]".
+  A member can have SES-bot print their ID by calling "?id".
   You can safely try out a command without committing to it with the "?" prefix.
   You can read my source code here: https://github.com/danfinlay/discord-ses-bot
   `
@@ -78,6 +79,8 @@ function getAuthor (id) {
 
 function createUser (id) {
   // for sharing publicly, multicast
+  // address book for easy send
+  const book = {}
   // set via "share"
   const shareBox = {}
   shareBoxes.set(id, shareBox)
@@ -89,19 +92,30 @@ function createUser (id) {
   const compartment = new Compartment({
     id: id,
     my: {},
+    book,
     share: shareBox,
-    inbox,
+    inbox: createAddressBookProxy(book, inbox),
     // print: console.log,
     help,
     send: (to, label, value) => {
-      sendValueBetweenAuthors(id, to, label, value)
+      sendValueBetweenAuthors(id, mapToAddressWithBook(book, to), label, value)
     },
     // expose the shareBoxes map as an object that returns read only interfaces
-    others: createReadOnlyMapProxy(shareBoxes, (otherShareBox) => createReadOnlyProxy(otherShareBox))
+    others: createAddressBookProxy(book,
+      createReadOnlyMapProxy(shareBoxes, (otherShareBox) => createReadOnlyProxy(otherShareBox))
+    )
   })
   return {
     compartment
   }
+}
+
+function mapToAddressWithBook (book, rawTo) {
+  return book[rawTo] || rawTo
+}
+
+function createAddressBookProxy (book, target) {
+  return createKeyTransformProxy(target, (rawTo) => mapToAddressWithBook(book, rawTo))
 }
 
 function sendValueBetweenAuthors (from, to, label, value) {
@@ -157,10 +171,11 @@ function createReadOnlyMapProxy (map, resultTransform) {
 }
 
 function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Reflect) {
-  // if target is an object, return as is
+  // if target is NOT an object, return as is
   if (target === undefined || Object(target) !== target) {
     return target
   }
+  // false proxy target to avoid unintended fallback
   return new Proxy({}, {
     // read hooks
     get: (_, ...args) => {
@@ -204,6 +219,37 @@ function createReadOnlyProxy (target, resultTransform = (x) => x, handlers = Ref
     setPrototypeOf: (_, ...args) => {
       throw new Error('createReadOnlyProxy: mutation not allowed')
     }
+  })
+}
+
+
+function createKeyTransformProxy (target, keyTransform = (x) => x, handlers = Reflect) {
+  // if target is NOT an object, return as is
+  if (target === undefined || Object(target) !== target) {
+    return target
+  }
+  // real proxy target to allow unspecified handlers to work normally
+  return new Proxy(target, {
+    // read hooks
+    get: (_, key, ...args) => {
+      return handlers.get(target, keyTransform(key), ...args)
+    },
+    getOwnPropertyDescriptor: (_, key, ...args) => {
+      return handlers.getOwnPropertyDescriptor(target, keyTransform(key), ...args)
+    },
+    has: (_, key, ...args) => {
+      return handlers.has(target, keyTransform(key), ...args)
+    },
+    // mutation hooks
+    defineProperty: (_, key, ...args) => {
+      return handlers.defineProperty(target, keyTransform(key), ...args)
+    },
+    deleteProperty: (_, key, ...args) => {
+      return handlers.deleteProperty(target, keyTransform(key), ...args)
+    },
+    set: (_, key, ...args) => {
+      return handlers.set(target, keyTransform(key), ...args)
+    },
   })
 }
 
