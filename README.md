@@ -26,3 +26,4 @@ To resume after a crash, maybe use `nodemon index.js`.
 
 As long as you move your `config.json` and `log.txt` file to the root of this repository, you can resume your machine state on another machine, in another folder, or whatever.
 
+To invite this bot to a discord server, have the server admin click a link in the form of `https://discord.com/oauth2/authorize?client_id=${APP_KEY}&scope=bot`
