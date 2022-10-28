@@ -131,7 +131,7 @@ export function createMachine ({
       console.log('restarting')
       await restart()
       console.log('restarted')
-      stringReply = 'Fatal Error, state reverted.'
+      stringReply = `Fatal Error, state reverted:\n${error.stack}`
     }
 
     if (stringReply.length > REPLY_LIMIT) {
