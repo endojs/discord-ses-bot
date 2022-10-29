@@ -25,7 +25,6 @@ export function createRunner () {
     const kernelSrc = await fs.readFile(path.join(__dirname, 'kernel.js'), 'utf8')
     await worker.evaluate(kernelSrc)
     console.log('initialized kernel')
-    // await worker.evaluate(`handleCommand = (function(){\n${kernelSrc}\n})()`);
     isInitialized = true
   }
 

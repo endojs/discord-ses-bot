@@ -1,5 +1,8 @@
 // this code runs inside xsnap
 
+// must set handleCommand on globalThis for xsnap
+globalThis.handleCommand = handleCommand
+
 function help () {
   return `Welcome to SES-bot!
   
