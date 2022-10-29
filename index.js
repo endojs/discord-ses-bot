@@ -58,12 +58,7 @@ async function main () {
 
     // For simulated calls, invoke a new machine to try it.
     if (simulatePrefix === message[0]) {
-      const commands = await machine.getLogFromDisk()
-      const counterfactual = createMachine({
-        // We don't need to remember this state
-        logging: false
-      })
-      await counterfactual.replayPast(commands)
+      const counterfactual = await machine.fork({ logging: false })
       counterfactual.queue({ loggable, msg })
       return
     }

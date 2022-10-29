@@ -26,7 +26,21 @@ export function createMachine ({
     replayPastFromDisk,
     getLogFromDisk,
     flushCommands,
-    queue
+    queue,
+    fork,
+  }
+
+  async function fork (opts = {}) {
+    // dont want to override the log
+    // theres prolly a different way to solve this
+    // like setting a different log file
+    if (opts.logging !== false) {
+      throw new Error('logging must be set to false')
+    }
+    const commands = await getLogFromDisk()
+    const clone = createMachine(opts)
+    await clone.replayPast(commands)
+    return clone
   }
 
   function queue (opts) {
