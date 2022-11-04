@@ -15,7 +15,7 @@ function help () {
   They can access objects sent from you at their "inbox[yourId][sendLabel]".
   A member can have SES-bot print their ID by calling "?id".
   You can safely try out a command without committing to it with the "?" prefix.
-  You can read my source code here: https://github.com/danfinlay/discord-ses-bot
+  You can read my source code here: https://github.com/endojs/discord-ses-bot
   `
 }
 
