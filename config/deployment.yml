@@ -28,6 +28,9 @@ spec:
         image: <IMAGE>
         imagePullSecrets:
         - name: registry-metamask
+        volumeMounts:
+        - mountPath: /storage
+          name: data
       volumes:
       - name: data
         persistentVolumeClaim:
